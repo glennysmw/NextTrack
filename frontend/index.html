@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A stateless listening deck. NextTrack reads the session in your browser, never on a server, and cues what should come next."
+    />
+    <!-- Deck default is the dark stock; the warm-paper variant is opt-in. -->
+    <meta name="theme-color" content="#1a1216" />
+    <meta name="theme-color" content="#f0e8da" media="(prefers-color-scheme: light)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>NextTrack — A Listening Deck That Forgets You</title>
+    <script>
+      // Apply the stored stock before first paint so the page never flashes the
+      // wrong theme. Mirrors the key written by useLocalStorageState in Header.
+      try {
+        var stock = JSON.parse(localStorage.getItem('nexttrack_theme'));
+        document.documentElement.classList.toggle('dark', stock !== 'light');
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

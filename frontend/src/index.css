@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Materials. Two hand-tuned palettes, not one inverted from the other:
+   dark is tungsten light on oxblood; light is burnt ochre printed on kraft.
+   Values are "R G B" triplets so Tailwind's /alpha modifiers keep working.
+   Every pair below was contrast-checked (body >= 4.5:1, UI >= 3:1).
+--------------------------------------------------------------------------- */
+
+/* Light — warm paper stock. */
+:root {
+  --paper: 240 232 218;
+  --sleeve: 231 221 203;
+  --deck: 220 207 185;
+
+  --ink: 36 26 22;
+  --ink-muted: 94 76 67;
+  --ink-faint: 101 83 73;
+
+  --rule: 201 183 159;
+  --rule-strong: 122 103 84;
+
+  --amber: 154 86 6;
+  --amber-ink: 122 68 4;
+  --moss: 74 98 52;
+  --moss-ink: 61 84 41;
+  --rust: 156 64 25;
+  --rust-ink: 138 55 20;
+
+  --on-accent: 247 242 232;
+
+  /* Texture: ink absorbed into paper fibre. */
+  --grain-opacity: 0.045;
+  --grain-blend: multiply;
+}
+
+/* Dark — deep aubergine, cream ink, tungsten lamp. */
+.dark {
+  --paper: 26 18 22;
+  --sleeve: 35 26 29;
+  --deck: 46 34 38;
+
+  --ink: 244 234 223;
+  --ink-muted: 192 170 164;
+  --ink-faint: 158 136 128;
+
+  --rule: 62 47 53;
+  --rule-strong: 151 122 128;
+
+  --amber: 233 166 63;
+  --amber-ink: 242 188 102;
+  --moss: 143 169 122;
+  --moss-ink: 166 190 144;
+  --rust: 206 107 65;
+  --rust-ink: 224 138 99;
+
+  --on-accent: 26 18 22;
+
+  /* Texture: emulsion grain lifting off a dark plate. */
+  --grain-opacity: 0.05;
+  --grain-blend: screen;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@layer base {
+  html {
+    /* Mono numerals line up in columns everywhere they appear. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  body {
+    @apply bg-paper font-sans text-body text-ink antialiased;
+  }
+
+  /* Paper grain. A tileable turbulence plate, fixed so it reads as the stock the
+     page is printed on rather than something that scrolls with the content. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    /* Above #root (z-index 1) so the stock reads across the panels too, not just
+       in the gaps between them. Never intercepts a click. */
+    z-index: 2;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    mix-blend-mode: var(--grain-blend);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch' seed='7'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* Different seed and frequency so the two themes never share a grain pattern. */
+  .dark body::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch' seed='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  ::selection {
+    @apply bg-amber text-on-accent;
+  }
+
+  /* Keyboard focus: a hard amber bracket. `outline` rather than a ring so the
+     2px gap shows the real surface behind it — correct on paper, sleeve, deck,
+     and on the amber keys themselves, in both stocks. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--amber));
+    outline-offset: 2px;
+  }
+
+  /* Tape-counter scrollbar — square, hairlined, no floating pill. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-paper;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply border border-rule bg-deck;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-rule-strong;
+  }
+
+  /* ---- Linear tempo fader --------------------------------------------------
+     Hairline track, tick marks every 10 BPM across the 40-200 range (6.25%),
+     amber fill up to the handle, square brass handle with a centre index line.
+     --fill is set per input from the markup. */
+  input[type='range'] {
+    @apply h-6 w-full cursor-pointer appearance-none bg-transparent;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 10px;
+    border: 1px solid rgb(var(--rule-strong));
+    background-color: rgb(var(--deck));
+    background-image:
+      linear-gradient(
+        to right,
+        rgb(var(--amber)) var(--fill, 0%),
+        transparent var(--fill, 0%)
+      ),
+      repeating-linear-gradient(
+        to right,
+        rgb(var(--rule-strong)) 0 1px,
+        transparent 1px 6.25%
+      );
+  }
+  input[type='range']::-moz-range-track {
+    height: 10px;
+    border: 1px solid rgb(var(--rule-strong));
+    background-color: rgb(var(--deck));
+    background-image:
+      linear-gradient(
+        to right,
+        rgb(var(--amber)) var(--fill, 0%),
+        transparent var(--fill, 0%)
+      ),
+      repeating-linear-gradient(
+        to right,
+        rgb(var(--rule-strong)) 0 1px,
+        transparent 1px 6.25%
+      );
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    @apply appearance-none;
+    width: 10px;
+    height: 22px;
+    margin-top: -7px;
+    border: 1px solid rgb(var(--ink));
+    background-color: rgb(var(--amber));
+    background-image: linear-gradient(
+      to right,
+      transparent 0 4px,
+      rgb(var(--on-accent)) 4px 5px,
+      transparent 5px 100%
+    );
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 10px;
+    height: 22px;
+    border-radius: 0;
+    border: 1px solid rgb(var(--ink));
+    background-color: rgb(var(--amber));
+  }
+}
+
+@layer components {
+  /* The shared surface. A printed card: hairline edge, square corners, no lift. */
+  .panel {
+    @apply border border-rule bg-sleeve p-5;
+  }
+
+  /* All-caps mono label. Modest tracking — 0.06em, not the 0.18em SaaS tell. */
+  .panel-label {
+    @apply font-mono text-label font-medium uppercase text-ink-faint;
+  }
+
+  /* Primary action. An amber key that physically depresses on click. */
+  .btn-play {
+    @apply inline-flex items-center gap-2 border border-ink bg-amber px-4 py-2
+      font-mono text-label font-bold uppercase text-on-accent shadow-hard-sm
+      transition-[transform,box-shadow,background-color] hover:bg-amber-ink
+      active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+      disabled:opacity-50 disabled:active:translate-x-0 disabled:active:translate-y-0;
+  }
+
+  /* Secondary action. Same footprint, no fill. */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 border border-rule-strong bg-transparent
+      px-4 py-2 font-mono text-label font-medium uppercase text-ink-muted
+      transition-colors hover:border-ink hover:bg-deck hover:text-ink
+      active:translate-x-px active:translate-y-px;
+  }
+
+  /* Typeset stamp — the privacy mark, the "limited data" note. Not a pill. */
+  .stamp {
+    @apply inline-flex items-center gap-1.5 rounded border border-rule-strong px-2
+      py-1 font-mono text-label font-medium uppercase text-ink-muted;
+  }
+
+  /* A printed track listing row: hairline-separated, warm band on hover. */
+  .track-row {
+    @apply flex w-full items-center gap-4 border-b border-rule px-2 py-3 text-left
+      transition-colors hover:bg-deck;
+  }
+
+  /* Diegetic tape hiss — 1px stripes, used only on the deck surround edges. */
+  .tape-hiss {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgb(var(--ink) / 0.06) 0 1px,
+      transparent 1px 4px
+    );
+  }
+}
+
+/* Texture is decoration. Users who ask for less of it get none. */
+@media (prefers-reduced-transparency: reduce) {
+  body::before {
+    display: none;
+  }
+  .tape-hiss {
+    background-image: none;
+  }
+}
+
+/* Mechanical motion is still motion. Freeze the tick and the needle. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
