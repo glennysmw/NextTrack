@@ -145,6 +145,8 @@ place in this workflow by finding defect D1 in the engineering log.
 | Determinism across identical requests | live, 8 paired requests | **PASS** — 8/8 identical |
 | Adversarial input sweep | `python scripts/adversarial_sweep.py` | **PASS** — 32/32; no 5xx from any malformed input |
 | Accessibility baseline | DOM audit in the running app | **PASS** — see below |
+| Report claims match code and data | `python scripts/verify_report_claims.py` | **PASS** — 85/85 |
+| Word counts within every limit | `python scripts/word_count.py` | **PASS** — 10,387 / 10,500 |
 
 Evidence: `docs/final-evidence/api_examples.json` (13 live transcripts plus a
 determinism check), `screenshot_home.png`, `screenshot_recommendation.png`,

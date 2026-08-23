@@ -1071,7 +1071,7 @@ stages visibly disagree.
 accuracy/diversity plane.
 
 **Against the baselines, the engine wins decisively.** The full cascade beats random
-selection within the same pool by 0.656 nDCG and the popularity baseline by 0.463, both
+selection within the same pool by 0.656 nDCG and the popularity baseline by 0.464, both
 at p < 0.00001. Random selection over the whole catalogue scores zero throughout, the
 expected result for a 1-in-5,844 lottery, which confirms the metrics behave. This
 supports the project's core technical premise: session context alone, with no stored
@@ -1381,3 +1381,40 @@ Whitman, B., & Lawrence, S. (2002). Inferring descriptions and similarity for mu
 Wilcoxon, F. (1945). Individual comparisons by ranking methods. *Biometrics Bulletin*, 1(6), 80–83.
 
 Yuan, W., Yang, C., Nguyen, Q. V. H., Cui, L., He, T., & Yin, H. (2023). Interaction-level membership inference attack against federated recommender systems. In *Proceedings of the ACM Web Conference 2023 (WWW 2023)* (pp. 1053–1062).
+
+---
+
+## Appendix A: API endpoint reference
+
+All endpoints are served under `/api/v1` and documented interactively through FastAPI's
+generated OpenAPI schema at `/docs` (Figure 5). Verbatim live request/response
+transcripts for all of them, including four error cases, are in
+`docs/final-evidence/api_examples.json`.
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/api/v1/search` | POST | Search YouTube Music for playable, official songs |
+| `/api/v1/top` | GET | Today's Top 5 — daily-rotating picks, no server-side storage |
+| `/api/v1/resolve` | POST | Map a played track's title and artist to a MusicBrainz id |
+| `/api/v1/recommend` | POST | Return the next recommended track for a listening history |
+| `/api/v1/health` | GET | Version, cache statistics, and per-source reachability |
+
+Failed recommendations return a machine-readable `reason` alongside the human-readable
+`detail`: `no_history_resolved`, `no_genres_for_history`, `no_candidates_found`,
+`no_candidates_after_filters`, `no_youtube_match`.
+
+## Appendix B: Word count
+
+Counted by `backend/scripts/word_count.py`, which applies the assignment's stated
+exclusions: the reference list, figure and table legends, and chapter titles. Code blocks
+and ASCII diagrams are excluded as figures. Table contents *are* counted.
+
+| Chapter | Words | Limit |
+|---|---:|---:|
+| 1. Introduction | 945 | 1,000 |
+| 2. Literature Review | 2,119 | 2,500 |
+| 3. Design | 1,564 | 2,000 |
+| 4. Implementation | 2,303 | 2,500 |
+| 5. Evaluation | 2,482 | 2,500 |
+| 6. Conclusion | 974 | 1,000 |
+| **Total** | **10,387** | **10,500** |

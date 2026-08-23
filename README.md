@@ -122,6 +122,16 @@ produces a 5xx:
 cd backend && python scripts/adversarial_sweep.py
 ```
 
+### Report verification
+
+Two scripts keep the written report honest against the code:
+
+```bash
+cd backend
+python scripts/verify_report_claims.py   # 85 assertions: every number, file and citation
+python scripts/word_count.py             # per-chapter word counts against the limits
+```
+
 ### Static checks
 
 ```bash

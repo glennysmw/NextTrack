@@ -1,0 +1,12 @@
+Chapter                         strict     raw   limit  status
+----------------------------------------------------------------
+Chapter 1: Introduction            945     968    1000  OK
+Chapter 2: Literature Review      2119    2192    2500  OK
+Chapter 3: Design                 1564    1619    2000  OK
+Chapter 4: Implementation         2303    2426    2500  OK
+Chapter 5: Evaluation             2482    2638    2500  OK
+Chapter 6: Conclusion              974    1008    1000  OK
+----------------------------------------------------------------
+TOTAL                            10387   10851   10500  OK
+
+margin under the total limit: 113 words
