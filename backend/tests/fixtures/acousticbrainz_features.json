@@ -1,0 +1,37 @@
+{
+  "5b11f4ce-a62d-471e-81fc-a69a8278c7da": {
+    "tempo": 117.0,
+    "key": "F#",
+    "mode": "minor",
+    "energy": 0.7,
+    "loudness": 0.6
+  },
+  "8e2f1a3b-5c6d-7e8f-9a0b-1c2d3e4f5a6b": {
+    "tempo": 120.0,
+    "key": "F#",
+    "mode": "minor",
+    "energy": 0.68,
+    "loudness": 0.6
+  },
+  "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
+    "tempo": 123.0,
+    "key": "D",
+    "mode": "major",
+    "energy": 0.75,
+    "loudness": 0.62
+  },
+  "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f": {
+    "tempo": 78.0,
+    "key": "E",
+    "mode": "major",
+    "energy": 0.55,
+    "loudness": 0.58
+  },
+  "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f90": {
+    "tempo": 104.0,
+    "key": "G",
+    "mode": "minor",
+    "energy": 0.5,
+    "loudness": 0.55
+  }
+}

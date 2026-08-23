@@ -1,0 +1,110 @@
+{
+  "artists": {
+    "nirvana": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+    "pearl_jam": "83b9cbe7-2222-4222-8222-9c2b0a1a5c11",
+    "soundgarden": "9c9f3d21-3333-4333-8333-77bb90f0d3aa"
+  },
+  "recordings": {
+    "5b11f4ce-a62d-471e-81fc-a69a8278c7da": {
+      "mbid": "5b11f4ce-a62d-471e-81fc-a69a8278c7da",
+      "title": "Smells Like Teen Spirit",
+      "artist": "Nirvana",
+      "artist_mbid": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+      "album": "Nevermind",
+      "duration_seconds": 301,
+      "genres": [
+        "grunge",
+        "alternative rock"
+      ]
+    },
+    "8e2f1a3b-5c6d-7e8f-9a0b-1c2d3e4f5a6b": {
+      "mbid": "8e2f1a3b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+      "title": "Come As You Are",
+      "artist": "Nirvana",
+      "artist_mbid": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+      "album": "Nevermind",
+      "duration_seconds": 219,
+      "genres": [
+        "grunge",
+        "alternative rock"
+      ]
+    },
+    "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
+      "mbid": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "title": "Lithium",
+      "artist": "Nirvana",
+      "artist_mbid": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+      "album": "Nevermind",
+      "duration_seconds": 257,
+      "genres": [
+        "grunge",
+        "alternative rock"
+      ]
+    },
+    "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e": {
+      "mbid": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+      "title": "In Bloom",
+      "artist": "Nirvana",
+      "artist_mbid": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+      "album": "Nevermind",
+      "duration_seconds": 254,
+      "genres": [
+        "grunge"
+      ]
+    },
+    "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f": {
+      "mbid": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "title": "Alive",
+      "artist": "Pearl Jam",
+      "artist_mbid": "83b9cbe7-2222-4222-8222-9c2b0a1a5c11",
+      "album": "Ten",
+      "duration_seconds": 341,
+      "genres": [
+        "grunge",
+        "hard rock"
+      ]
+    },
+    "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f90": {
+      "mbid": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f90",
+      "title": "Black Hole Sun",
+      "artist": "Soundgarden",
+      "artist_mbid": "9c9f3d21-3333-4333-8333-77bb90f0d3aa",
+      "album": "Superunknown",
+      "duration_seconds": 320,
+      "genres": [
+        "grunge",
+        "psychedelic rock"
+      ]
+    }
+  },
+  "tags": {
+    "grunge": [
+      "8e2f1a3b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+      "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+      "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f90"
+    ],
+    "alternative rock": [
+      "8e2f1a3b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+      "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+    ]
+  },
+  "similar_artists": {
+    "5b11f4ce-1111-4111-8111-a69a8278c7da": {
+      "83b9cbe7-2222-4222-8222-9c2b0a1a5c11": 900.0,
+      "9c9f3d21-3333-4333-8333-77bb90f0d3aa": 450.0
+    }
+  },
+  "search": [
+    {
+      "mbid": "5b11f4ce-a62d-471e-81fc-a69a8278c7da",
+      "title": "Smells Like Teen Spirit",
+      "artist": "Nirvana",
+      "artist_mbid": "5b11f4ce-1111-4111-8111-a69a8278c7da",
+      "album": "Nevermind",
+      "duration_seconds": 301,
+      "genres": []
+    }
+  ]
+}
