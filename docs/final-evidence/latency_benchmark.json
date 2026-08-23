@@ -1,0 +1,49 @@
+{
+ "url": "http://localhost:8000",
+ "histories_attempted": 8,
+ "histories_unrankable": 0,
+ "determinism": {
+  "repeat_pairs_compared": 8,
+  "repeat_pairs_identical": 8,
+  "all_identical": true
+ },
+ "cache_after_run": {
+  "feature_size": 310,
+  "youtube_size": 8,
+  "candidate_pools": 21,
+  "hits": 597,
+  "misses": 339
+ },
+ "sources": {
+  "musicbrainz": "degraded",
+  "acousticbrainz": "degraded",
+  "youtube": "ok",
+  "listenbrainz": "ok"
+ },
+ "scenarios": {
+  "first_request": {
+   "samples": 1,
+   "mean_seconds": 155.368,
+   "median_seconds": 155.368,
+   "p95_seconds": 155.368,
+   "min_seconds": 155.368,
+   "max_seconds": 155.368
+  },
+  "new_history_warm": {
+   "samples": 7,
+   "mean_seconds": 28.232,
+   "median_seconds": 29.034,
+   "p95_seconds": 41.276,
+   "min_seconds": 12.261,
+   "max_seconds": 41.276
+  },
+  "repeat_identical": {
+   "samples": 8,
+   "mean_seconds": 0.461,
+   "median_seconds": 0.447,
+   "p95_seconds": 0.578,
+   "min_seconds": 0.425,
+   "max_seconds": 0.578
+  }
+ }
+}

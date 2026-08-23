@@ -1,0 +1,34 @@
+  ok   422  empty body /recommend
+  ok   422  null history
+  ok   422  history not a list
+  ok   422  history of ints
+  ok   422  history of nulls
+  ok   422  nested list
+  ok   400  oversized string id
+  ok   400  21 ids (limit is 20)
+  ok   200  20 ids (at the limit)
+  ok   200  uppercase MBID
+  ok   200  whitespace-padded MBID
+  ok   400  SQL-ish injection
+  ok   400  path traversal in id
+  ok   422  params not an object
+  ok   404  tempo range reversed
+  ok   404  tempo range negative
+  ok   200  tempo range huge
+  ok   422  tempo range wrong arity
+  ok   422  tempo range non-numeric
+  ok   422  exclude_artists not a list
+  ok   200  huge exclusion list
+  ok   200  unicode / emoji search
+  ok   200  oversized search query
+  ok   422  search limit 0
+  ok   422  search limit 999
+  ok   422  search limit negative
+  ok   422  resolve empty title
+  ok   422  resolve missing artist
+  ok   200  resolve lucene metachars
+  ok   404  unknown endpoint
+  ok   405  wrong method on /top
+  ok   405  wrong method on /recommend
+
+32/32 behaved acceptably

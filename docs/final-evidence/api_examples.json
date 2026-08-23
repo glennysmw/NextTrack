@@ -1,0 +1,392 @@
+{
+ "health": {
+  "request": {
+   "method": "GET",
+   "path": "/api/v1/health"
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 5.368,
+   "body": {
+    "status": "ok",
+    "version": "0.1.0",
+    "cache": {
+     "feature_size": 102,
+     "youtube_size": 2,
+     "candidate_pools": 6,
+     "hits": 110,
+     "misses": 110
+    },
+    "sources": {
+     "musicbrainz": "degraded",
+     "acousticbrainz": "degraded",
+     "youtube": "ok",
+     "listenbrainz": "ok"
+    }
+   }
+  }
+ },
+ "search": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/search",
+   "body": {
+    "query": "smells like teen spirit",
+    "limit": 3
+   }
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 0.575,
+   "body": {
+    "results": [
+     {
+      "track_id": "ljUtuoFt-8c",
+      "title": "Smells Like Teen Spirit",
+      "artist": "Nirvana",
+      "album": "Nevermind",
+      "thumbnail": "https://yt3.googleusercontent.com/eyKiPBSqEu556sYTd_IyZhfxun5e_hatZ9tAyu8bnmVRgtbM3aW-SXUvhVX-d7s1oU0Yf3a38JOuYMZK5w=w120-h120-l90-rj",
+      "youtube_video_id": "ljUtuoFt-8c",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "7TDeBi34OtE",
+      "title": "Smells Like Teen Spirit",
+      "artist": "Nirvana",
+      "album": "Nevermind (Deluxe Edition)",
+      "thumbnail": "https://yt3.googleusercontent.com/y5IBmF0YJl0a88GbDmKQE2C596wB3xaqBz4XjLWCoerJz3X4ZVyKdAFBy93VYEPYd6ED0Ue3fNXS8X-cxw=w120-h120-l90-rj",
+      "youtube_video_id": "7TDeBi34OtE",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "FkhWzp1hNBY",
+      "title": "Smells Like Teen Spirit",
+      "artist": "Malia J",
+      "album": "Smells Like Teen Spirit",
+      "thumbnail": "https://yt3.googleusercontent.com/4KnNgeuIESe0aocZEZMIdNfGE18O6-eD13XAxSKT5V2SDDs5QuGBH0AYPCRsE_9MpyHVUc7aDEcpU6OjeQ=w120-h120-l90-rj",
+      "youtube_video_id": "FkhWzp1hNBY",
+      "duration_seconds": null
+     }
+    ]
+   }
+  }
+ },
+ "top": {
+  "request": {
+   "method": "GET",
+   "path": "/api/v1/top"
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 0.001,
+   "body": {
+    "results": [
+     {
+      "track_id": "wU26xVT_vBU",
+      "title": "One More Time (Radio Edit)",
+      "artist": "Daft Punk",
+      "album": "One More Time",
+      "thumbnail": "https://yt3.googleusercontent.com/_pY9BvNbeIpT2PUw_hQszOM3PZzmBRdi5uGNL8U6ZVE8AvApw7WqgMotzoGg7kk_ip8yj9VBkAJlgwv7_A=w120-h120-l90-rj",
+      "youtube_video_id": "wU26xVT_vBU",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "xTvyyoF_LZY",
+      "title": "Shape of You",
+      "artist": "Ed Sheeran",
+      "album": "Shape of You",
+      "thumbnail": "https://yt3.googleusercontent.com/TMbA3LImAL96nFkm5cI1x6LiEMvMbRg4IRxEeABd9qpXsfmwKhZHRD1MucnjG5QIsVEp0Vpn7h7M51FH3Q=w120-h120-l90-rj",
+      "youtube_video_id": "xTvyyoF_LZY",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "htg8v0g_4e4",
+      "title": "Don't Start Now",
+      "artist": "Dua Lipa",
+      "album": "Don't Start Now",
+      "thumbnail": "https://yt3.googleusercontent.com/Skx10WwN9GPRWvW9blVfU9hGK_ctmRBN10eXbbgjFXZTry4ESXRteATuoz285CCpaMILdDKIFUEkOql7=w120-h120-l90-rj",
+      "youtube_video_id": "htg8v0g_4e4",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "tYvFa2ARD24",
+      "title": "Uptown Funk (feat. Bruno Mars)",
+      "artist": "Mark Ronson",
+      "album": "Uptown Special",
+      "thumbnail": "https://yt3.googleusercontent.com/-NFtUA6dAmZKAy88a0k88UQ4VrYGKORqYBDSzMKCkwLJy5hgfMk3CppWBP61g6PXmJ69Dm41UNFke9k=w120-h120-l90-rj",
+      "youtube_video_id": "tYvFa2ARD24",
+      "duration_seconds": null
+     },
+     {
+      "track_id": "NQbkGDoD7B0",
+      "title": "SICKO MODE",
+      "artist": "Travis Scott",
+      "album": "ASTROWORLD",
+      "thumbnail": "https://yt3.googleusercontent.com/PSIZ9cf9hpESZwcSz2ylS5I-zIREqCSagxV-X4CJqefrE0sRCktRtFw-a7PlkLygmg7k1nZREKCaSzY=w120-h120-l90-rj",
+      "youtube_video_id": "NQbkGDoD7B0",
+      "duration_seconds": null
+     }
+    ]
+   }
+  }
+ },
+ "resolve": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/resolve",
+   "body": {
+    "title": "Mr. Brightside",
+    "artist": "The Killers"
+   }
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 3.486,
+   "body": {
+    "track_id": "ba415e0a-b655-43ba-89da-d1942a770b99"
+   }
+  }
+ },
+ "recommend": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "775bd63d-a8ec-4ac5-b6ac-56fa105eac62"
+    ]
+   }
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 24.712,
+   "body": {
+    "track_id": "199a3c44-7e25-4198-8cb5-443f06487bdf",
+    "title": "Last Kiss",
+    "artist": "Pearl Jam",
+    "youtube_video_id": "buGVXyYyqXw",
+    "score": 0.395,
+    "rationale": "Note: limited acoustic data for this track; recommendation primarily based on metadata. Recommended based on listeners of these artists also listening to this one, similar tempo (120 BPM vs history average 120 BPM), and matching energy level.",
+    "features": {
+     "tempo": 120.0,
+     "key": "C major",
+     "energy": 0.5,
+     "genres": [
+      "grunge"
+     ]
+    },
+    "limited_acoustic_data": true
+   }
+  }
+ },
+ "recommend_multi_track_history": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "775bd63d-a8ec-4ac5-b6ac-56fa105eac62",
+     "cdd611f4-f270-405b-910b-fddf60dff322"
+    ]
+   }
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 0.526,
+   "body": {
+    "track_id": "fac363f8-7da2-4d2d-9b19-d90be9bcefae",
+    "title": "Agitated",
+    "artist": "Muse",
+    "youtube_video_id": "wsTH8Dz18tM",
+    "score": 0.487,
+    "rationale": "Recommended based on listeners of these artists also listening to this one and shared genre tags (alternative rock, rock).",
+    "features": {
+     "tempo": 172.0,
+     "key": "C# major",
+     "energy": 0.0,
+     "genres": [
+      "rock",
+      "alternative rock",
+      "alternative"
+     ]
+    },
+    "limited_acoustic_data": false
+   }
+  }
+ },
+ "recommend_with_constraints": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "775bd63d-a8ec-4ac5-b6ac-56fa105eac62"
+    ],
+    "params": {
+     "tempo_range": [
+      90,
+      150
+     ],
+     "exclude_artists": [
+      "Nirvana"
+     ]
+    }
+   }
+  },
+  "response": {
+   "status": 200,
+   "elapsed_seconds": 0.792,
+   "body": {
+    "track_id": "0e84d50e-aa9a-4365-bae9-7e8f870f0f02",
+    "title": "Forced In",
+    "artist": "Muse",
+    "youtube_video_id": "YRV2JKVPTqs",
+    "score": 0.566,
+    "rationale": "Recommended based on listeners of these artists also listening to this one and shared genre tags (alternative rock, rock).",
+    "features": {
+     "tempo": 147.0,
+     "key": "F minor",
+     "energy": 0.0,
+     "genres": [
+      "rock",
+      "alternative rock",
+      "alternative"
+     ]
+    },
+    "limited_acoustic_data": false
+   }
+  }
+ },
+ "error_empty_history": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": []
+   }
+  },
+  "response": {
+   "status": 400,
+   "elapsed_seconds": 0.001,
+   "body": {
+    "detail": "track_history must not be empty"
+   }
+  }
+ },
+ "error_malformed_mbid": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "not-an-mbid"
+    ]
+   }
+  },
+  "response": {
+   "status": 400,
+   "elapsed_seconds": 0.001,
+   "body": {
+    "detail": "malformed MBID(s): ['not-an-mbid']"
+   }
+  }
+ },
+ "error_unknown_mbid": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "00000000-0000-0000-0000-000000000000"
+    ]
+   }
+  },
+  "response": {
+   "status": 404,
+   "elapsed_seconds": 0.71,
+   "body": {
+    "detail": "None of the supplied track IDs could be resolved to a known recording.",
+    "reason": "no_history_resolved"
+   }
+  }
+ },
+ "error_impossible_tempo_window": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "775bd63d-a8ec-4ac5-b6ac-56fa105eac62"
+    ],
+    "params": {
+     "tempo_range": [
+      199,
+      200
+     ]
+    }
+   }
+  },
+  "response": {
+   "status": 404,
+   "elapsed_seconds": 0.003,
+   "body": {
+    "detail": "No candidates fell within the requested tempo range (199–200 BPM).",
+    "reason": "no_candidates_after_filters"
+   }
+  }
+ },
+ "error_unknown_parameter_rejected": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/recommend",
+   "body": {
+    "track_history": [
+     "775bd63d-a8ec-4ac5-b6ac-56fa105eac62"
+    ],
+    "params": {
+     "not_a_real_param": 1
+    }
+   }
+  },
+  "response": {
+   "status": 422,
+   "elapsed_seconds": 0.001,
+   "body": {
+    "detail": [
+     {
+      "type": "extra_forbidden",
+      "loc": [
+       "body",
+       "params",
+       "not_a_real_param"
+      ],
+      "msg": "Extra inputs are not permitted",
+      "input": 1
+     }
+    ]
+   }
+  }
+ },
+ "error_empty_search_query": {
+  "request": {
+   "method": "POST",
+   "path": "/api/v1/search",
+   "body": {
+    "query": "   "
+   }
+  },
+  "response": {
+   "status": 400,
+   "elapsed_seconds": 0.001,
+   "body": {
+    "detail": "query must not be empty"
+   }
+  }
+ },
+ "determinism_check": {
+  "note": "Identical inputs must produce identical output — a stateless API that drifts between calls is not reproducible.",
+  "first_track_id": "fac363f8-7da2-4d2d-9b19-d90be9bcefae",
+  "second_track_id": "fac363f8-7da2-4d2d-9b19-d90be9bcefae",
+  "identical": true
+ }
+}

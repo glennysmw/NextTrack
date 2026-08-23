@@ -169,7 +169,102 @@ the repository as `backend/scripts/adversarial_sweep.py`.
 
 ## 6. Evaluation
 
-[PENDING]
+All figures below were produced by the commands shown, from data committed in the
+repository. No number in this section or in the report was entered by hand.
+
+### Reproduction
+
+```bash
+cd backend
+python scripts/build_eval_dataset.py all    # network, slow (~2h); output is committed
+python scripts/augment_catalogue.py         # network (~20 min); output is committed
+python scripts/offline_eval.py              # offline, deterministic (~5 min)
+python scripts/make_figures.py              # renders every figure from the raw results
+```
+
+Only the last two are needed to reproduce the reported results: the harvested corpus
+(`backend/data/`) is committed, and `offline_eval.py` runs entirely against that
+snapshot with a fixed random seed.
+
+### Dataset
+
+| | |
+|---|---|
+| Held-out sessions | 140 (138 rankable) |
+| Listeners | 24, stored as salted hashes |
+| Session length | 4–8 tracks, median 8 |
+| Distinct session recordings | 859 by 322 artists |
+| Full catalogue | 5,844 tracks (859 session + 4,985 real retrieved candidates) |
+| AcousticBrainz coverage, session tracks | 65.8% |
+| AcousticBrainz coverage, retrieved candidates | 67.0% |
+| ListenBrainz similarity coverage | 264 / 281 artists (94.0%) |
+| Genre tags per track | median 5 (session), median 2 (candidates) |
+
+### Experiment A — retrieval reachability (the headline result)
+
+| Was the held-out track in the retrieved pool? | Share of 138 sessions |
+|---|---:|
+| Exact recording identifier | **0.000** |
+| Same song (normalised artist + title) | **0.000** |
+| Same artist anywhere in the pool | 0.130 |
+
+Mean retrieved pool size 145.7. **End-to-end accuracy is therefore zero for every arm,
+baselines included.** The genre-gated MusicBrainz tag search does not surface the music
+real listeners play. This is reported as the project's principal finding, not hidden.
+
+### Experiment B — ranking with the target injected among 99 sampled negatives
+
+Reported because Experiment A makes end-to-end accuracy non-discriminating. The target
+is **injected**; these are not end-to-end figures.
+
+| Arm | HitRate@1 | HitRate@10 | nDCG@10 | MRR | ILD@10 |
+|---|---:|---:|---:|---:|---:|
+| Random (whole catalogue) | 0.000 | 0.000 | 0.000 | 0.000 | 0.887 |
+| Random (within retrieved pool) | 0.000 | 0.101 | 0.039 | 0.021 | 0.689 |
+| Most popular | 0.188 | 0.275 | 0.231 | 0.217 | 0.692 |
+| Content only | 0.623 | 0.674 | 0.648 | 0.640 | 0.367 |
+| Content + collaborative | 0.659 | 0.739 | 0.704 | 0.692 | 0.421 |
+| Content + MMR | 0.565 | 0.877 | 0.701 | 0.647 | 0.735 |
+| Full cascade | 0.551 | 0.855 | 0.695 | 0.644 | 0.735 |
+
+Wilcoxon signed-rank on paired per-session nDCG (n = 138):
+
+| Comparison | Mean difference | p |
+|---|---:|---:|
+| Full cascade vs random (pool) | +0.656 | < 0.00001 |
+| Full cascade vs random (catalogue) | +0.695 | < 0.00001 |
+| Full cascade vs popularity | +0.464 | < 0.00001 |
+| Content + collaborative vs content only | +0.055 | **0.003** |
+| Content + MMR vs content only | +0.053 | 0.095 |
+| Full cascade vs content only | +0.046 | 0.195 |
+
+**Control for metadata richness.** Session tracks carry more genre tags (mean 7.1) than
+retrieved candidates (2.6), so the evaluation was re-run with negatives restricted to
+candidates carrying ≥3 tags. Accuracy did not collapse — it rose slightly (content-only
+nDCG 0.648 → 0.692; full cascade 0.695 → 0.726; n = 93) — and every ordering is
+preserved, so the result is not an artefact of metadata asymmetry.
+
+### Live latency (against real upstream services, fresh process)
+
+| Scenario | Median | p95 | Samples |
+|---|---:|---:|---:|
+| First request after startup | 155.4 s | — | 1 |
+| New history, process partly warm | 29.0 s | 41.3 s | 7 |
+| Repeat identical request | 0.45 s | 0.58 s | 8 |
+
+Determinism: 8/8 paired identical requests returned identical tracks.
+
+### Evidence files
+
+`docs/final-evidence/` — `offline_eval_results.json`, `offline_eval_summary.csv`,
+`offline_eval_per_session.csv`, `offline_eval_reachability.csv`,
+`latency_benchmark.json`, `api_examples.json`, `adversarial_sweep.txt`, and eleven
+figures/screenshots.
+
+### User study
+
+**Not conducted.** No participant data, usability score, acceptance rate, or human
+significance test exists or is claimed anywhere in this submission.
 
 ---
 
@@ -247,4 +342,20 @@ only optional, non-secret overrides.
 
 ## 10. Final verdict
 
-[PENDING]
+### READY WITH DOCUMENTED LIMITATIONS
+
+The system builds, starts, serves live traffic against four external services, and
+passes 150 automated tests, all static checks, and a 32-case adversarial input sweep with
+no failures. Seven of eight project objectives are delivered; the eighth (the user study)
+is not, and is stated as not delivered rather than approximated. The evaluation is real,
+reproducible from the repository, and reports a negative headline result — the retrieval
+stage cannot reach the held-out track — rather than a flattering one.
+
+Two items require the author before submission and cannot be completed from here:
+
+1. **ACTION REQUIRED: VERIFY PUBLIC REPOSITORY ACCESS** — create the remote, push, confirm
+   public visibility, and paste the URL into the title page of `FinalReport.md` (§9).
+2. **Record the demonstration video** — 3–5 minutes, own narration, not sped up. A
+   scene-by-scene plan with timings and narration is in `FINAL_VIDEO_PLAN.md`.
+
+Neither affects the state of the code.

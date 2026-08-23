@@ -1,0 +1,15 @@
+condition,arm,label,hit@1,hit@10,ndcg@10,mrr,ild@10,novelty@10,coverage
+unmatched,random_catalogue,Random (whole catalogue),0.0,0.0,0.0,0.0,0.8872,9.7712,0.2134
+unmatched,random_pool,Random (within retrieved pool),0.0,0.1014,0.0389,0.0207,0.6885,9.7796,0.1672
+unmatched,popularity,Most popular,0.1884,0.2754,0.2311,0.2172,0.6922,9.7503,0.0765
+unmatched,content_only,NextTrack: content only,0.6232,0.6739,0.6484,0.6402,0.3672,9.7671,0.1504
+unmatched,content_collab,NextTrack: content + collaborative,0.6594,0.7391,0.7037,0.6919,0.4214,9.7671,0.1376
+unmatched,content_mmr,NextTrack: content + MMR,0.5652,0.8768,0.7014,0.6473,0.735,9.7571,0.1419
+unmatched,full_cascade,NextTrack: full cascade,0.5507,0.8551,0.6945,0.6441,0.7346,9.7571,0.135
+matched,random_catalogue,Random (whole catalogue),0.0,0.0,0.0,0.0,0.8908,9.7633,0.0
+matched,random_pool,Random (within retrieved pool),0.0215,0.1613,0.0742,0.0487,0.6131,9.7808,0.0
+matched,popularity,Most popular,0.2258,0.3226,0.2702,0.2539,0.6363,9.7717,0.0
+matched,content_only,NextTrack: content only,0.6452,0.7419,0.6923,0.6766,0.3936,9.7717,0.0
+matched,content_collab,NextTrack: content + collaborative,0.6774,0.7742,0.7236,0.7076,0.4703,9.7717,0.0
+matched,content_mmr,NextTrack: content + MMR,0.5914,0.9032,0.7327,0.6793,0.7609,9.7717,0.0
+matched,full_cascade,NextTrack: full cascade,0.5806,0.8925,0.7258,0.674,0.7496,9.7717,0.0

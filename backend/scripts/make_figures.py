@@ -1,8 +1,8 @@
 """Render the evaluation figures from the raw offline-evaluation results.
 
-Every figure is generated from ``offline_eval_results.json`` — no number is typed in
-by hand, so a figure cannot drift out of step with the results table it illustrates.
-Re-running ``offline_eval.py`` and then this script reproduces both together.
+Every figure is generated from ``offline_eval_results.json`` — no number is typed in by
+hand, so a figure cannot drift out of step with the table it illustrates. Re-running
+``offline_eval.py`` and then this script reproduces both together.
 
 Usage:  python scripts/make_figures.py [--evidence ../docs/final-evidence]
 """
@@ -64,10 +64,38 @@ def _colour(arm: str) -> str:
     return MUTED if arm in BASELINE_ARMS else (AMBER if arm == "full_cascade" else MOSS)
 
 
+def figure_reachability(results: dict, out: pathlib.Path) -> None:
+    """Experiment A: how often the retrieval stage surfaces the held-out track."""
+    reach = results["retrieval_reachability"]
+    labels = [
+        "Exact recording\nidentifier",
+        "Same song\n(artist + title)",
+        "Same artist\nanywhere in pool",
+    ]
+    values = [reach["exact_mbid"], reach["same_song"], reach["same_artist"]]
+
+    fig, ax = _figure(7.4, 4.2)
+    bars = ax.bar(labels, values, color=[RUST, RUST, AMBER], edgecolor=INK, linewidth=1.2)
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel("share of sessions", color=INK, fontsize=10)
+    ax.set_title(
+        f"Retrieval reachability of the held-out track "
+        f"({reach['sessions_measured']} sessions, mean pool {reach['mean_pool_size']:.0f})",
+        color=INK, fontsize=12, pad=14,
+    )
+    for bar, value in zip(bars, values, strict=True):
+        ax.annotate(f"{value:.3f}", (bar.get_x() + bar.get_width() / 2, value),
+                    textcoords="offset points", xytext=(0, 6), ha="center",
+                    fontsize=11, color=INK, fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(out / "fig_reachability.png", dpi=200, facecolor=PAPER)
+    plt.close(fig)
+
+
 def figure_accuracy(results: dict, k: int, out: pathlib.Path) -> None:
     """Baselines vs. engine configurations on the two headline accuracy metrics."""
     arms = BASELINE_ARMS + ENGINE_ARMS
-    fig, ax = _figure(9.0, 4.6)
+    fig, ax = _figure(9.4, 4.8)
     width = 0.38
     positions = range(len(arms))
 
@@ -75,58 +103,64 @@ def figure_accuracy(results: dict, k: int, out: pathlib.Path) -> None:
     ndcg = [results["arms"][a][f"ndcg@{k}"] for a in arms]
 
     ax.bar([p - width / 2 for p in positions], hit, width,
-           color=[_colour(a) for a in arms], edgecolor=INK, linewidth=1.1, label=f"HitRate@{k}")
+           color=[_colour(a) for a in arms], edgecolor=INK, linewidth=1.1,
+           label=f"HitRate@{k}")
     ax.bar([p + width / 2 for p in positions], ndcg, width,
            color=[_colour(a) for a in arms], edgecolor=INK, linewidth=1.1,
            hatch="///", label=f"nDCG@{k}")
 
     ax.set_xticks(list(positions))
     ax.set_xticklabels([SHORT_LABELS[a] for a in arms])
+    ax.set_ylim(0, 1.05)
     ax.set_ylabel("score", color=INK, fontsize=10)
     ax.set_title(
-        f"Next-track accuracy on {results['config']['sessions_scored']} held-out "
-        f"listening sessions",
+        f"Ranking the held-out track among {results['config']['negatives_sampled']} "
+        f"sampled negatives ({results['sessions_unmatched']} sessions)",
         color=INK, fontsize=12, pad=14,
     )
-    ax.legend(frameon=False, fontsize=9, labelcolor=INK)
+    ax.legend(frameon=False, fontsize=9, labelcolor=INK, loc="upper left")
     fig.tight_layout()
     fig.savefig(out / "fig_accuracy.png", dpi=200, facecolor=PAPER)
     plt.close(fig)
 
 
 def figure_ablation(results: dict, k: int, out: pathlib.Path) -> None:
-    """The ablation: what each cascade stage contributes, on accuracy and diversity."""
-    fig, (left, right) = plt.subplots(1, 2, figsize=(10.0, 4.4))
+    """What each cascade stage contributes: precision, depth, and diversity."""
+    fig, axes = plt.subplots(1, 3, figsize=(12.4, 4.4))
     fig.patch.set_facecolor(PAPER)
-    for ax in (left, right):
+    for ax in axes:
         _style(ax)
 
     labels = [SHORT_LABELS[a] for a in ENGINE_ARMS]
-    ndcg = [results["arms"][a][f"ndcg@{k}"] for a in ENGINE_ARMS]
-    ild = [results["arms"][a][f"ild@{k}"] for a in ENGINE_ARMS]
+    colours = [_colour(a) for a in ENGINE_ARMS]
+    series = [
+        ("hit@1", "Top-1 accuracy (HitRate@1)", "share of sessions"),
+        (f"hit@{k}", f"Top-{k} accuracy (HitRate@{k})", "share of sessions"),
+        (f"ild@{k}", f"Diversity (intra-list, @{k})", "mean pairwise dissimilarity"),
+    ]
+    for ax, (key, title, ylabel) in zip(axes, series, strict=True):
+        values = [results["arms"][a][key] for a in ENGINE_ARMS]
+        ax.bar(labels, values, color=colours, edgecolor=INK, linewidth=1.1)
+        ax.set_ylim(0, 1.0)
+        ax.set_title(title, color=INK, fontsize=11)
+        ax.set_ylabel(ylabel, color=INK, fontsize=9)
 
-    left.bar(labels, ndcg, color=[_colour(a) for a in ENGINE_ARMS],
-             edgecolor=INK, linewidth=1.1)
-    left.set_title(f"Accuracy (nDCG@{k})", color=INK, fontsize=11)
-    left.set_ylabel("nDCG", color=INK, fontsize=10)
-
-    right.bar(labels, ild, color=[_colour(a) for a in ENGINE_ARMS],
-              edgecolor=INK, linewidth=1.1)
-    right.set_title(f"Diversity (intra-list, @{k})", color=INK, fontsize=11)
-    right.set_ylabel("mean pairwise dissimilarity", color=INK, fontsize=10)
-
-    fig.suptitle("Ablation: contribution of each cascade stage", color=INK, fontsize=12)
+    fig.suptitle(
+        "Ablation: the collaborative stage raises accuracy, the diversity stage trades "
+        "top-1 precision for depth and diversity",
+        color=INK, fontsize=11.5,
+    )
     fig.tight_layout()
     fig.savefig(out / "fig_ablation.png", dpi=200, facecolor=PAPER)
     plt.close(fig)
 
 
-def figure_accuracy_diversity_tradeoff(results: dict, k: int, out: pathlib.Path) -> None:
+def figure_tradeoff(results: dict, k: int, out: pathlib.Path) -> None:
     """The trade-off the MMR stage exists to negotiate, plotted directly."""
-    fig, ax = _figure(6.6, 5.0)
+    fig, ax = _figure(6.8, 5.0)
     for arm in ENGINE_ARMS + BASELINE_ARMS:
         row = results["arms"][arm]
-        ax.scatter(row[f"ild@{k}"], row[f"ndcg@{k}"], s=140, zorder=3,
+        ax.scatter(row[f"ild@{k}"], row[f"ndcg@{k}"], s=150, zorder=3,
                    color=_colour(arm), edgecolor=INK, linewidth=1.2)
         ax.annotate(SHORT_LABELS[arm].replace("\n", " "),
                     (row[f"ild@{k}"], row[f"ndcg@{k}"]),
@@ -140,64 +174,63 @@ def figure_accuracy_diversity_tradeoff(results: dict, k: int, out: pathlib.Path)
     plt.close(fig)
 
 
-def figure_retrieval(results: dict, k: int, out: pathlib.Path) -> None:
-    """Where accuracy is lost: retrieval versus ranking."""
-    fig, ax = _figure(8.0, 4.4)
-    arms = ENGINE_ARMS
-    positions = range(len(arms))
+def figure_control(results: dict, k: int, out: pathlib.Path) -> None:
+    """Does the result survive controlling for metadata richness?"""
+    arms = BASELINE_ARMS + ENGINE_ARMS
+    fig, ax = _figure(9.4, 4.6)
     width = 0.38
+    positions = range(len(arms))
 
-    overall = [results["arms"][a][f"hit@{k}"] for a in arms]
-    conditional = [results["arms"][a][f"hit@{k}|retrieved"] for a in arms]
+    free = [results["arms"][a][f"ndcg@{k}"] for a in arms]
+    control = [results["arms_matched"][a][f"ndcg@{k}"] for a in arms]
 
-    ax.bar([p - width / 2 for p in positions], overall, width, color=MUTED,
-           edgecolor=INK, linewidth=1.1, label="all scored sessions")
-    ax.bar([p + width / 2 for p in positions], conditional, width, color=AMBER,
-           edgecolor=INK, linewidth=1.1, label="sessions where the track was retrieved")
-
-    recall = results["retrieval_recall"]
-    ax.axhline(recall, color=RUST, linestyle="--", linewidth=1.4)
-
-    # Headroom above the tallest element so neither the recall line's label nor the
-    # legend can collide with a bar.
-    ceiling = max([*overall, *conditional, recall])
-    ax.set_ylim(0, ceiling * 1.42)
-    ax.annotate(f"retrieval ceiling = {recall:.2f}", (-0.45, recall),
-                textcoords="offset points", xytext=(0, 6), ha="left",
-                fontsize=9, color=RUST)
+    ax.bar([p - width / 2 for p in positions], free, width, color=MUTED,
+           edgecolor=INK, linewidth=1.1,
+           label=f"negatives sampled freely (n={results['sessions_unmatched']})")
+    ax.bar([p + width / 2 for p in positions], control, width, color=MOSS,
+           edgecolor=INK, linewidth=1.1,
+           label=f"control: well-tagged negatives only (n={results['sessions_matched']})")
 
     ax.set_xticks(list(positions))
     ax.set_xticklabels([SHORT_LABELS[a] for a in arms])
-    ax.set_ylabel(f"HitRate@{k}", color=INK, fontsize=10)
-    ax.set_title("Retrieval ceiling versus ranking performance", color=INK, fontsize=12, pad=14)
-    ax.legend(frameon=False, fontsize=9, labelcolor=INK, loc="upper center", ncol=2)
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel(f"nDCG@{k}", color=INK, fontsize=10)
+    ax.set_title(
+        "Control for metadata richness: the ranking result is not an artefact of "
+        "targets carrying more tags",
+        color=INK, fontsize=11.5, pad=14,
+    )
+    ax.legend(frameon=False, fontsize=9, labelcolor=INK, loc="upper left")
     fig.tight_layout()
-    fig.savefig(out / "fig_retrieval.png", dpi=200, facecolor=PAPER)
+    fig.savefig(out / "fig_control.png", dpi=200, facecolor=PAPER)
     plt.close(fig)
 
 
 def figure_latency(evidence: pathlib.Path, out: pathlib.Path) -> None:
-    """Live end-to-end latency distribution, if the benchmark has been run."""
+    """Live end-to-end latency, if the benchmark has been run."""
     path = evidence / "latency_benchmark.json"
     if not path.exists():
         return
     data = json.loads(path.read_text(encoding="utf-8"))
-    fig, ax = _figure(8.0, 4.2)
-    names = list(data["scenarios"])
-    values = [data["scenarios"][n]["median_seconds"] for n in names]
-    p95 = [data["scenarios"][n]["p95_seconds"] for n in names]
+    scenarios = {n: v for n, v in data["scenarios"].items() if v.get("samples")}
+    if not scenarios:
+        return
 
-    positions = range(len(names))
-    ax.bar([p - 0.19 for p in positions], values, 0.38, color=MOSS,
-           edgecolor=INK, linewidth=1.1, label="median")
-    ax.bar([p + 0.19 for p in positions], p95, 0.38, color=AMBER,
-           edgecolor=INK, linewidth=1.1, label="95th percentile")
-    ax.set_xticks(list(positions))
+    fig, ax = _figure(8.0, 4.4)
+    names = list(scenarios)
+    medians = [scenarios[n]["median_seconds"] for n in names]
+    ax.bar(range(len(names)), medians, 0.55, color=[MOSS, AMBER, RUST][: len(names)],
+           edgecolor=INK, linewidth=1.1)
+    ax.set_yscale("log")
+    ax.set_xticks(range(len(names)))
     ax.set_xticklabels([n.replace("_", "\n") for n in names], fontsize=9)
-    ax.set_ylabel("seconds", color=INK, fontsize=10)
+    ax.set_ylabel("median seconds (log scale)", color=INK, fontsize=10)
     ax.set_title("End-to-end request latency against live upstream services",
                  color=INK, fontsize=12, pad=14)
-    ax.legend(frameon=False, fontsize=9, labelcolor=INK)
+    for index, value in enumerate(medians):
+        ax.annotate(f"{value:.2f} s", (index, value), textcoords="offset points",
+                    xytext=(0, 6), ha="center", fontsize=10, color=INK,
+                    fontweight="bold")
     fig.tight_layout()
     fig.savefig(out / "fig_latency.png", dpi=200, facecolor=PAPER)
     plt.close(fig)
@@ -216,9 +249,10 @@ if __name__ == "__main__":
     k = results["config"]["k"]
     args.evidence.mkdir(parents=True, exist_ok=True)
 
+    figure_reachability(results, args.evidence)
     figure_accuracy(results, k, args.evidence)
     figure_ablation(results, k, args.evidence)
-    figure_accuracy_diversity_tradeoff(results, k, args.evidence)
-    figure_retrieval(results, k, args.evidence)
+    figure_tradeoff(results, k, args.evidence)
+    figure_control(results, k, args.evidence)
     figure_latency(args.evidence, args.evidence)
     print(f"figures written to {args.evidence}")
