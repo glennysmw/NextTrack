@@ -316,7 +316,7 @@ Stated here in full; each is also discussed in the report.
 |---|---|
 | Version control | Git repository initialised at `nexttrack/` |
 | Branch | `main` |
-| Commit | `7a1d75a` (`7a1d75a9501992f1e7c4fff2a6f5628a177fe5ef`) |
+| Commit | `2e0e19c` (`2e0e19cc1023f75a1f7013e365137d1df9d8ee7b`) — recorded before this line was written, so the tree at that commit differs from HEAD only by this file |
 | Uncommitted changes | 0 |
 | Remote | **none configured** |
 | Tracked files | 124 (no `venv/`, no `node_modules/`, no `.env`) |
