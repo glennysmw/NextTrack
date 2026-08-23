@@ -1,0 +1,37 @@
+[project]
+name = "nexttrack"
+version = "0.1.0"
+description = "Privacy-first, stateless music recommendation API"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.setuptools]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4", "SIM", "ARG", "RET", "PTH"]
+ignore = [
+    "E501",    # line length is handled by the formatter, not the linter
+    "B008",    # FastAPI's Depends()/Field() defaults are the framework idiom
+    "SIM108",  # ternaries are not always clearer than an if/else here
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests reach into module internals deliberately (vocabulary, caches, private helpers).
+"tests/*" = ["ARG001", "ARG002", "SLF001"]
+"scripts/*" = ["ARG001"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+exclude = ["venv"]

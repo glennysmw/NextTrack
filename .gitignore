@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+env/
+
+# Environment — never commit real configuration
+.env
+.env.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Intermediate harvest state (the finished corpus and sessions ARE committed, so the
+# offline evaluation is reproducible from the repository alone)
+backend/data/eval_sessions_raw.json
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Agent/editor tooling scratch left in the project root — not part of NextTrack.
+# The application's own package.json lives in frontend/.
+.claude/
+.claude-flow/
+.agents/
+.mcp.json
+skills-lock.json
+/package.json
+/package-lock.json

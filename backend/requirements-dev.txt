@@ -1,0 +1,13 @@
+# Development and evaluation tooling. Not needed to run the API.
+-r requirements.txt
+
+# Static analysis (both run clean; see FINAL_SUBMISSION_READINESS.md)
+ruff>=0.6.0
+mypy>=1.11.0
+
+# Figure generation for the offline evaluation (scripts/make_figures.py)
+matplotlib>=3.9.0
+
+# Wilcoxon signed-rank testing in scripts/offline_eval.py. Already present transitively
+# via scikit-learn, but the evaluation imports it directly, so it is declared.
+scipy>=1.11.0
