@@ -65,6 +65,10 @@ class Settings:
 
     # External call timeout (seconds)
     HTTP_TIMEOUT = 8.0
+    # A bulk AcousticBrainz request carries up to 25 recordings and legitimately takes
+    # far longer than a single lookup; the per-call timeout would otherwise abort work
+    # that was about to succeed, costing 25 tracks their acoustic data at a time.
+    BULK_HTTP_TIMEOUT = 30.0
     HEALTH_PING_TIMEOUT = 4.0
 
     # Comma-separated origins via env for production; defaults to local dev servers.

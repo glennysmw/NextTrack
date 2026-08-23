@@ -319,17 +319,26 @@ async def phase_refresh_acoustics() -> None:
         return
 
     refreshed = await acousticbrainz.get_features_bulk(mbids)
-    changed = 0
+    changed = preserved = 0
     for mbid, acoustic in refreshed.items():
-        if corpus["tracks"][mbid].get("acoustic") != acoustic:
+        existing = corpus["tracks"][mbid].get("acoustic")
+        # A failed batch is indistinguishable from "no data" at this layer, so a
+        # transient timeout would otherwise *delete* previously-good data — which is
+        # exactly what happened on the first refresh run. AcousticBrainz is frozen, so
+        # a record that existed does not legitimately vanish; keep it and say so.
+        if acoustic is None and existing is not None:
+            preserved += 1
+            continue
+        if existing != acoustic:
             changed += 1
         corpus["tracks"][mbid]["acoustic"] = acoustic
 
     _save_corpus(corpus)
-    with_data = sum(1 for v in refreshed.values() if v is not None)
+    with_data = sum(1 for v in corpus["tracks"].values() if v.get("acoustic"))
     logger.info(
-        "refreshed %d tracks (%d changed); %d have acoustic data (%.1f%%)",
-        len(mbids), changed, with_data, 100 * with_data / len(mbids),
+        "refreshed %d tracks (%d changed, %d preserved through a failed fetch); "
+        "%d have acoustic data (%.1f%%)",
+        len(mbids), changed, preserved, with_data, 100 * with_data / len(mbids),
     )
 
 

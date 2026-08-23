@@ -210,6 +210,45 @@ leave the corpus stale.
 
 ---
 
+### D2c. A timed-out batch silently deleted good acoustic data
+
+| | |
+|---|---|
+| **Severity** | Medium — silent data loss in the evaluation corpus |
+| **Location** | `backend/app/data/acousticbrainz.py`, `scripts/build_eval_dataset.py` |
+| **Found by** | Watching the acoustic-coverage figure *fall* after a corpus refresh |
+
+**Issue.** Bulk fetching carries up to 25 recordings per request, and `get_features_bulk`
+maps any failure to `None` — deliberately, so that callers handle "AcousticBrainz has no
+record" and "AcousticBrainz is unreachable" identically. That is correct for a live
+recommendation. It is wrong for a *refresh of stored data*, where `None` overwrites a
+record that already existed.
+
+**Impact.** The first refresh of the evaluation corpus reported coverage of 52.6%,
+against roughly 60% observed during harvesting. Three batches had timed out and taken
+about seventy-five tracks' acoustic data with them. Nothing failed loudly; the corpus
+simply got quietly worse, and every downstream metric would have been computed on the
+degraded version.
+
+**Root cause.** Two compounding problems. The 8-second per-call timeout was tuned for a
+single lookup and is too tight for a 25-record bulk request, so timeouts were common;
+and a single timeout had no retry, so one slow response cost a whole batch.
+
+**Fix.** Three parts. `_fetch_bulk` retries a transport failure once with a short
+backoff (but *not* an HTTP error, which is the server's actual answer). Bulk requests use
+a dedicated `BULK_HTTP_TIMEOUT` of 30 s rather than the 8 s per-call timeout. And the
+refresh phase refuses to replace existing data with `None`, logging how many records it
+preserved through a failed fetch — AcousticBrainz is frozen, so a record that existed
+does not legitimately vanish.
+
+**Verification.** Coverage recovered across successive runs — 52.6% → 60.2% → 65.8%,
+converging with `0 changed` on a repeat run. Four tests in `tests/test_acousticbrainz.py`
+cover retry-on-transport-failure, bounded retries, and no-retry-on-HTTP-error.
+
+**Status.** Fixed and verified.
+
+---
+
 ### D3. Ten of the twelve cold-start seed MBIDs were wrong
 
 | | |

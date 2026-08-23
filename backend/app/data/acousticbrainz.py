@@ -22,6 +22,8 @@ _PING_MBID = "cdd611f4-f270-405b-910b-fddf60dff322"
 # ~100 concurrent requests to a single decommissioned-but-still-serving host and was
 # measured as the dominant cost of a cold request. In batches it is four.
 _BULK_BATCH_SIZE = 25
+_BULK_ATTEMPTS = 2
+_BULK_RETRY_DELAY_SECONDS = 1.0
 
 # The bulk payload nests each recording's submissions under numeric string keys and
 # carries an unrelated "mbid_mapping" entry alongside the results.
@@ -149,24 +151,39 @@ def _unwrap_bulk(payload: object) -> dict[str, dict]:
     return out
 
 
-async def _fetch_bulk(client: httpx.AsyncClient, level: str, batch: list[str]) -> dict[str, dict]:
-    """Fetch one batch from a bulk endpoint, treating any failure as no data."""
-    try:
-        resp = await client.get(
-            f"{settings.ACOUSTICBRAINZ_BASE_URL}/{level}",
-            params={"recording_ids": ";".join(batch)},
-        )
-    except Exception as exc:  # noqa: BLE001 - a miss and an outage are handled alike
-        logger.warning("AcousticBrainz %s batch failed: %s", level, exc)
-        return {}
-    if resp.status_code != 200:
-        logger.debug("AcousticBrainz %s batch returned %s", level, resp.status_code)
-        return {}
-    try:
-        return _unwrap_bulk(resp.json())
-    except ValueError as exc:
-        logger.warning("Malformed AcousticBrainz %s batch: %s", level, exc)
-        return {}
+async def _fetch_bulk(
+    client: httpx.AsyncClient, level: str, batch: list[str]
+) -> dict[str, dict]:
+    """Fetch one batch from a bulk endpoint, retrying a transient failure once.
+
+    A batch carries up to 25 recordings, so losing one to a timeout silently costs 25
+    tracks their acoustic detail — and, when refreshing a stored corpus, silently
+    *deletes* it. Observed in practice: three batches timed out during a corpus refresh
+    and took roughly seventy-five tracks' data with them. One retry with a short backoff
+    recovers the common case; a batch that still fails returns no data, which callers
+    already treat as "AcousticBrainz has nothing".
+    """
+    url = f"{settings.ACOUSTICBRAINZ_BASE_URL}/{level}"
+    params = {"recording_ids": ";".join(batch)}
+    for attempt in range(_BULK_ATTEMPTS):
+        try:
+            resp = await client.get(url, params=params)
+        except Exception as exc:  # noqa: BLE001 - a miss and an outage are handled alike
+            logger.warning(
+                "AcousticBrainz %s batch failed (%d/%d): %s",
+                level, attempt + 1, _BULK_ATTEMPTS, type(exc).__name__,
+            )
+            await asyncio.sleep(_BULK_RETRY_DELAY_SECONDS)
+            continue
+        if resp.status_code != 200:
+            logger.debug("AcousticBrainz %s batch returned %s", level, resp.status_code)
+            return {}
+        try:
+            return _unwrap_bulk(resp.json())
+        except ValueError as exc:
+            logger.warning("Malformed AcousticBrainz %s batch: %s", level, exc)
+            return {}
+    return {}
 
 
 async def get_features_bulk(mbids: list[str]) -> dict[str, dict | None]:
@@ -186,7 +203,7 @@ async def get_features_bulk(mbids: list[str]) -> dict[str, dict | None]:
         unique[start : start + _BULK_BATCH_SIZE]
         for start in range(0, len(unique), _BULK_BATCH_SIZE)
     ]
-    async with httpx.AsyncClient(timeout=settings.HTTP_TIMEOUT) as client:
+    async with httpx.AsyncClient(timeout=settings.BULK_HTTP_TIMEOUT) as client:
         responses = await asyncio.gather(
             *(_fetch_bulk(client, level, batch) for batch in batches for level in ("low-level", "high-level"))
         )

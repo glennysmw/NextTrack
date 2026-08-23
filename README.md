@@ -96,7 +96,7 @@ with rationales — appear.
 
 ## Testing
 
-**Backend** (118 tests, from `backend/`):
+**Backend** (121 tests, from `backend/`):
 
 ```bash
 pytest -v

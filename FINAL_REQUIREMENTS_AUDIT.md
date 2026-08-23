@@ -162,7 +162,7 @@ Claims found in prior documents that this pass had to correct.
 | "identical histories always produce the same candidate search" | DRAFT §4.1 | True of genre *selection*, false end-to-end — upstream search is unstable | Fixed (D1b); the report now states the property and its residual limit |
 | "every response states, in one readable sentence, why that track and not another" | DRAFT §4.1 | True, but one of the four signals could never fire, and a second could fire wrongly | Fixed (D1, D2b); the claim now holds for all signals |
 | Feature vectors include "energy" | PRELIM, DRAFT §4.1 | The dimension carried a danceability probability, near-orthogonal to energy | Fixed (D2b); the dimension now reflects what it is named |
-| "36 automated tests" | DRAFT §4.5 | 37 at the start of this pass | Superseded: 118 backend + 29 frontend |
+| "36 automated tests" | DRAFT §4.5 | 37 at the start of this pass | Superseded: 121 backend + 29 frontend |
 | Burke (2002) cited as *Knowledge and Information Systems*, 1(4), 331–370 | PRELIM, DRAFT refs | Published in *User Modeling and User-Adapted Interaction*, 12(4), 331–370 (DOI 10.1023/A:1021240730564). The page range was right; the journal and volume were not | Reference corrected |
 | Brooke (1996) titled "SUS: A quick and practical usability scale" | DRAFT refs | The chapter is titled "SUS: A quick and dirty usability scale" | Reference corrected |
 | Kaminskas & Bridge (2016) cited as 7(1), 1–42 | DRAFT refs | ACM TiiS 7(1), Article 2 | Reference corrected to article-number form |

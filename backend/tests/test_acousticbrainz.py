@@ -203,3 +203,53 @@ def test_energy_falls_back_to_the_default_with_no_high_level_data():
 def test_energy_ignores_out_of_range_or_unparseable_values(bad):
     high = _high(mood_aggressive={"aggressive": bad}, mood_party={"party": 0.7})
     assert acousticbrainz._energy(high) == pytest.approx(0.7)
+
+
+# --- Batch-failure resilience -----------------------------------------------------
+# A batch carries 25 recordings, so losing one to a timeout costs 25 tracks their
+# acoustic data at once. During a corpus refresh three batches timed out and took
+# roughly seventy-five tracks' data with them — and because the refresh could not
+# distinguish "no data" from "fetch failed", it *deleted* previously-good records.
+# One retry plus a bulk-specific timeout recovered them.
+
+
+async def test_a_transient_failure_is_retried(mocker):
+    attempts = {"n": 0}
+
+    async def _get(self, url, **kwargs):
+        attempts["n"] += 1
+        if attempts["n"] == 1:
+            raise httpx.ReadTimeout("slow")
+        return _Resp(200, LOW_PAYLOAD if url.endswith("low-level") else HIGH_PAYLOAD)
+
+    mocker.patch.object(httpx.AsyncClient, "get", _get)
+    result = await acousticbrainz.get_features_bulk([MBID_A])
+    assert result[MBID_A] is not None
+    assert attempts["n"] > 1
+
+
+async def test_retries_are_bounded(mocker):
+    attempts = {"n": 0}
+
+    async def _get(self, url, **kwargs):
+        attempts["n"] += 1
+        raise httpx.ReadTimeout("always slow")
+
+    mocker.patch.object(httpx.AsyncClient, "get", _get)
+    mocker.patch.object(acousticbrainz, "_BULK_RETRY_DELAY_SECONDS", 0)
+    assert await acousticbrainz.get_features_bulk([MBID_A]) == {MBID_A: None}
+    # Two levels x two attempts; it must not retry indefinitely.
+    assert attempts["n"] == 2 * acousticbrainz._BULK_ATTEMPTS
+
+
+async def test_an_http_error_is_not_retried(mocker):
+    """A 5xx is the server's answer, not a transport failure; retrying just burns time."""
+    attempts = {"n": 0}
+
+    async def _get(self, url, **kwargs):
+        attempts["n"] += 1
+        return _Resp(503)
+
+    mocker.patch.object(httpx.AsyncClient, "get", _get)
+    assert await acousticbrainz.get_features_bulk([MBID_A]) == {MBID_A: None}
+    assert attempts["n"] == 2  # one request per level, no retry
