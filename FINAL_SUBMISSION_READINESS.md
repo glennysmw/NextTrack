@@ -3,8 +3,7 @@
 Verification record for the CM3070 final submission. Every figure here was produced by
 running the command shown, on the code as it stands.
 
-*Placeholders marked `[PENDING]` are filled by the final verification pass; see the end
-of this document for the completion timestamp.*
+*Every check below was run against the committed state recorded in §9.*
 
 ---
 
@@ -317,10 +316,10 @@ Stated here in full; each is also discussed in the report.
 |---|---|
 | Version control | Git repository initialised at `nexttrack/` |
 | Branch | `main` |
-| Commit | [PENDING] |
-| Uncommitted changes | [PENDING] |
+| Commit | `7a1d75a` (`7a1d75a9501992f1e7c4fff2a6f5628a177fe5ef`) |
+| Uncommitted changes | 0 |
 | Remote | **none configured** |
-| Tracked files | 104 (no `venv/`, no `node_modules/`, no `.env`) |
+| Tracked files | 124 (no `venv/`, no `node_modules/`, no `.env`) |
 
 **Secrets check:** the tree was scanned for key/token/secret/password patterns across
 Python, TypeScript, JSON and Markdown files — none found. `.env` contains only a comment
