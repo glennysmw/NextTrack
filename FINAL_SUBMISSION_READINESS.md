@@ -318,7 +318,7 @@ Stated here in full; each is also discussed in the report.
 | Branch | `main` |
 | Commit | `2e0e19c` (`2e0e19cc1023f75a1f7013e365137d1df9d8ee7b`) — recorded before this line was written, so the tree at that commit differs from HEAD only by this file |
 | Uncommitted changes | 0 |
-| Remote | **none configured** |
+| Remote | `origin` → https://github.com/glennysmw/NextTrack |
 | Tracked files | 124 (no `venv/`, no `node_modules/`, no `.env`) |
 
 **Secrets check:** the tree was scanned for key/token/secret/password patterns across
@@ -327,17 +327,11 @@ recording that a previously-stored YouTube key was removed, and is excluded by
 `.gitignore` at both project and backend level. The committed `.env.example` files list
 only optional, non-secret overrides.
 
-> **ACTION REQUIRED: VERIFY PUBLIC REPOSITORY ACCESS**
->
-> No Git remote is configured and no GitHub CLI credentials are available in this
-> environment, so the repository could not be pushed or its visibility verified. The
-> assignment requires a publicly viewable repository link, remaining viewable until
-> results are released. Before submitting you must:
->
-> 1. Create a repository on GitHub (or equivalent) and set it to **public**.
-> 2. `git remote add origin <url> && git push -u origin main`.
-> 3. Open the URL in a signed-out browser window to confirm it is genuinely public.
-> 4. Paste the URL into the placeholder on the title page of `FinalReport.md`.
+**Public repository: verified.** https://github.com/glennysmw/NextTrack — `main` pushed
+on 2026-09-14. Checked with unauthenticated requests: the repository page returns HTTP
+200, the GitHub API reports `"visibility": "public"`, and the remote `main` head matched
+the local commit at push time. The URL is on the title page of `FinalReport.md`. It must
+stay public until results are released.
 
 ---
 
@@ -352,11 +346,10 @@ is not, and is stated as not delivered rather than approximated. The evaluation 
 reproducible from the repository, and reports a negative headline result — the retrieval
 stage cannot reach the held-out track — rather than a flattering one.
 
-Two items require the author before submission and cannot be completed from here:
+The code is pushed to a verified public repository (§9). One item requires the author
+before submission and cannot be completed from here:
 
-1. **ACTION REQUIRED: VERIFY PUBLIC REPOSITORY ACCESS** — create the remote, push, confirm
-   public visibility, and paste the URL into the title page of `FinalReport.md` (§9).
-2. **Record the demonstration video** — 3–5 minutes, own narration, not sped up. A
+1. **Record the demonstration video** — 3–5 minutes, own narration, not sped up. A
    scene-by-scene plan with timings and narration is in `FINAL_VIDEO_PLAN.md`.
 
-Neither affects the state of the code.
+It does not affect the state of the code.

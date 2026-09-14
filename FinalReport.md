@@ -7,7 +7,7 @@ University of London International Programmes · BSc Computer Science and Relate
 **Author:** Soe Ming Wei, Glenn · **Student number:** 230657168
 **Supervisor:** Yeo Sze Wee
 
-**Code repository:** *[ACTION REQUIRED: insert the public repository URL — see §6.5]*
+**Code repository:** https://github.com/glennysmw/NextTrack
 
 ---
 
