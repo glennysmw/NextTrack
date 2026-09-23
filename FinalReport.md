@@ -25,18 +25,18 @@ user database. Each request carries all the context needed to answer it, so the 
 data the server retains between calls is a cache of public, per-track facts that are
 identical for every caller.
 
-The project sits at the intersection of Music Information Retrieval, recommender
-systems, web API design, and privacy-by-design, and it exists to test one practical
-question: **does a music recommender actually need a permanent user profile in order to
-return a useful next track?**
+The project sits where Music Information Retrieval, recommender systems, web API
+design and privacy-by-design meet. It exists to test one practical question: **does a
+music recommender actually need a permanent user profile in order to return a useful
+next track?**
 
-The answer is two-sided, and the negative half belongs at the outset rather than in
-Chapter 5. On *ranking* the engine succeeds: given a candidate set containing the track
-a real listener played next, it places that track far above chance or popularity. On
-*retrieval* it fails outright — the production candidate generator never once surfaced
-the held-out track across 138 evaluated sessions, so end-to-end accuracy is zero for
-every configuration and baseline alike. Every accuracy figure below should be read
-against that boundary.
+The answer turned out to have two halves, and the unflattering one belongs here rather
+than buried in Chapter 5. On *ranking* the engine succeeds. Give it a candidate set
+containing the track a real listener played next, and it places that track far above
+chance or popularity. On *retrieval* it fails outright. Across 138 evaluated sessions
+the production candidate generator never once surfaced the held-out track, so
+end-to-end accuracy is zero for every configuration and every baseline alike. Every
+accuracy figure below should be read against that boundary.
 
 ### 1.2 Motivation
 
@@ -45,11 +45,11 @@ listening time and retention (IFPI, 2023). Nearly every commercial system rests 
 premise: the more a platform observes, the better it recommends. That premise creates
 three problems this project responds to.
 
-The first is cumulative privacy loss. Every play, skip, and search feeds a long-lived
+The first is cumulative privacy loss. Every play, skip and search feeds a long-lived
 profile the listener can neither fully inspect nor control, and the resulting store is a
-standing liability — Yuan et al. (2023) show that even privacy-preserving collaborative
+standing liability. Yuan et al. (2023) show that even privacy-preserving collaborative
 architectures remain vulnerable to membership inference, because the risk follows the
-retained data rather than the storage technique.
+retained data, not the storage technique.
 
 The second is profile contamination. A shared or household account blends several
 listeners into one profile that fits none of them, with no way to tell whose taste is
@@ -59,18 +59,18 @@ The third is developer accessibility. A developer who wants "what should play ne
 adopt an entire platform ecosystem: OAuth, account scopes, per-user state, and quota. No
 small, self-contained endpoint answers the question from context alone.
 
-Statelessness addresses all three at once, and it is a testable technical claim rather
-than merely a privacy posture. Whitman and Lawrence (2002) identified similar artists
-correctly 78% of the time from unstructured community text with no per-user state,
-suggesting the signal a reasonable next track needs may already sit in public metadata
-and the session itself.
+Statelessness addresses all three at once. It is also a testable technical claim, not
+just a privacy posture. Whitman and Lawrence (2002) identified similar artists correctly
+78% of the time from unstructured community text with no per-user state, which suggests
+the signal a reasonable next track needs may already sit in public metadata and the
+session itself.
 
 ### 1.3 Project aim
 
-To design, build, and critically evaluate a stateless music recommendation API that
-produces explained next-track recommendations from session context alone — combining
+To design, build and critically evaluate a stateless music recommendation API that
+produces explained next-track recommendations from session context alone, combining
 content-based similarity, aggregate collaborative evidence and explicit diversity
-control — and to measure honestly how far that constraint can be pushed.
+control. And to measure honestly how far that constraint can be pushed.
 
 ### 1.4 Objectives and deliverables
 
@@ -103,31 +103,31 @@ ablation across engine configurations. *Delivered*, against held-out sequences f
 public listening histories (Chapter 5).
 
 **Objective 7 — User study.** A study with at least twelve participants. **Not
-delivered.** At the draft stage the engine was a single content-based stage, so
-Objective 4 was the larger outstanding deliverable; building and validating the
+delivered.** At the draft stage the engine was a single content-based stage, which left
+Objective 4 as the larger outstanding deliverable. Building and validating the
 collaborative stage, the diversity stage, the ablation and the evaluation harness
-consumed the time the study needed. Running a study against an engine still changing
-weekly would have measured a system that no longer existed at submission. The protocol
-is complete (Section 6.5); only its execution is outstanding. Sections 5.8 and 6.1 state
-what the absence costs.
+consumed the time the study needed. Running a study against an engine that was still
+changing weekly would have measured a system that no longer existed by submission. The
+protocol is complete (Section 6.5); only its execution is outstanding. Sections 5.8 and
+6.1 state what the absence costs.
 
 **Objective 8 — Final report.** Delivered as this document.
 
 ### 1.5 Scope and justification
 
 The objectives form a build path in which each stage makes the next assessable.
-Objectives 1 and 2 establish why a stateless design is defensible rather than merely
-convenient. Objectives 3 and 4 are the technical core. Objective 5 exists so the system
-can be exercised by someone other than the developer — without a usable interface, any
-study would measure API literacy rather than listening experience. Objectives 6 and 7
-provide the two complementary views of quality Shani and Gunawardana (2011) argue are
+Objectives 1 and 2 establish why a stateless design is defensible, not merely
+convenient. Objectives 3 and 4 are the technical core. Objective 5 exists so that
+someone other than the developer can exercise the system; without a usable interface,
+any study would measure API literacy instead of listening experience. Objectives 6 and 7
+supply the two complementary views of quality Shani and Gunawardana (2011) argue are
 both necessary: measurement against data, and response from people.
 
-The asymmetry between those last two is the work's principal limitation. The evaluation
-was widened to carry as much evidential weight as it legitimately can — real listening
-sessions rather than curated ones, a full ablation, baselines drawn from the same
-candidate pools, and a retrieval/ranking decomposition — but no offline measurement
-establishes whether a listener *likes* what the system chose.
+The asymmetry between those last two is the work's principal limitation. I widened the
+evaluation to carry as much evidential weight as it legitimately can, using real
+listening sessions instead of curated ones, a full ablation, baselines drawn from the
+same candidate pools, and a retrieval/ranking decomposition. None of it establishes
+whether a listener *likes* what the system chose.
 
 Two things were out of scope: neural session models, rejected on replicability grounds
 (Petrov and Macdonald, 2022; Section 2.6), and persistent server-side infrastructure,
@@ -151,20 +151,19 @@ which prediction held and which did not, and points to the section that measured
 ### 2.2 Spotify: the profile-centric baseline
 
 Spotify is the natural commercial comparison. Eriksson et al. (2019) provide the most
-detailed public account of its recommendation stack — a combination of collaborative
-filtering over user–track interaction data, text analysis of web and editorial sources,
-and audio features for tracks with thin interaction histories. The account is
-second-hand and the book's purpose is critical media research rather than system
-description, so it is cited here for the architecture's shape rather than its internals.
-Surveys by Roy and Dutta (2022) and Li et al. (2024) confirm such hybrids remain the
-dominant design.
+detailed public account of its recommendation stack: collaborative filtering over
+user–track interaction data, text analysis of web and editorial sources, and audio
+features for tracks with thin interaction histories. The account is second-hand, and the
+book's purpose is critical media research, not system description. I cite it here for
+the architecture's shape rather than its internals. Surveys by Roy and Dutta (2022) and
+Li et al. (2024) confirm such hybrids remain the dominant design.
 
-The privacy problem is structural rather than incidental: collaborative filtering
-requires a user–item interaction matrix, which requires persistent per-user data.
-Recommendation quality and data retention are not separable features; one is the
-mechanism of the other. NextTrack keeps Spotify's central insight — that combining
-independent kinds of evidence beats any single signal — while rejecting the premise that
-the collaborative half must be personal.
+The privacy problem is structural, not incidental. Collaborative filtering requires a
+user–item interaction matrix, which requires persistent per-user data. Recommendation
+quality and data retention are not separable features; one is the mechanism of the
+other. NextTrack keeps Spotify's central insight, that combining independent kinds of
+evidence beats any single signal, while rejecting the premise that the collaborative
+half must be personal.
 
 ### 2.3 Last.fm, Audioscrobbler, and the substitution this project made
 
@@ -175,21 +174,21 @@ design named Last.fm as the source of NextTrack's aggregate collaborative stage,
 precisely because *aggregate* co-listening can be consumed without the consumer storing
 anything about its own users.
 
-That requirement was delivered, but through **ListenBrainz** rather than Last.fm — a
-design decision rather than a convenience. Last.fm requires a registered developer key,
-breaking the project's "clone and run with no credentials" property, and is keyed on
-artist and track *name strings*, which would have demanded a second, lossy name-matching
-layer on top of the two-identifier resolution problem the project already contends with
-(Section 3.4). ListenBrainz publishes population-level artist similarity keyed natively
-on MusicBrainz identifiers, openly and without a key. The literature's argument — that
-aggregate co-listening carries similarity information metadata cannot — is what
-mattered; Last.fm was one possible supplier of it.
+That requirement was delivered, but through **ListenBrainz** instead of Last.fm. This
+was a design decision, not a convenience. Last.fm requires a registered developer key,
+which breaks the project's "clone and run with no credentials" property, and it is keyed
+on artist and track *name strings*. That would have demanded a second, lossy
+name-matching layer on top of the two-identifier resolution problem the project already
+contends with (Section 3.4). ListenBrainz publishes population-level artist similarity
+keyed natively on MusicBrainz identifiers, openly and without a key. What mattered was
+the literature's argument that aggregate co-listening carries similarity information
+metadata cannot. Last.fm was one possible supplier of it.
 
-Lamere and Celma's limitation still applies and was observed directly: co-listening
+Lamere and Celma's limitation still applies, and I observed it directly. Co-listening
 evidence is a function of listener volume, so it is strong for popular artists and absent
 for the long tail. ListenBrainz returned similarity data for the large majority of
-artists in this project's corpus (Section 5.3) — a figure reflecting a corpus drawn from
-what people actually play, which would fall sharply on a uniformly sampled catalogue.
+artists in this project's corpus (Section 5.3). That figure reflects a corpus drawn from
+what people actually play; on a uniformly sampled catalogue it would fall sharply.
 
 ### 2.4 Content-based filtering, and its predicted weakness
 
@@ -203,52 +202,52 @@ Whitman and Lawrence (2002) remain the strongest support for that choice: term p
 built from unstructured web text identified similar artists correctly 78% of the time
 using single-word term sets, with no per-user state.
 
-Two qualifications matter. First, this is *artist* similarity — weaker support for a
-track-level content engine than it appears, though unusually direct support for the
-artist-level collaborative stage in Section 2.5. Second, the study predates
+Two qualifications matter. First, this is *artist* similarity, which is weaker support
+for a track-level content engine than it appears, though unusually direct support for
+the artist-level collaborative stage in Section 2.5. Second, the study predates
 streaming-scale catalogues and current tagging ecosystems, so its magnitude should not
 be transferred. What transfers is the qualitative claim that public metadata alone
-carries usable similarity signal. Section 5.5 finds that claim holds for *ranking* —
-where the target is present in the candidate set — and Section 5.4 finds it says nothing
+carries usable similarity signal. Section 5.5 finds that claim holds for *ranking*, where
+the target is present in the candidate set. Section 5.4 finds it says nothing at all
 about whether retrieval can put the target there.
 
 Lops et al. also identify over-specialisation: ranking by similarity to what a listener
 already likes narrows recommendations toward a safe region of the feature space. The
-draft report observed this behaviour and could only report it; this submission tests
-it. The measurement is more interesting than the prediction. The diversity re-ranking
-stage does raise intra-list diversity as expected, but it costs accuracy when applied
-alone and recovers that accuracy only in combination with the collaborative stage
-(Section 5.5). The literature correctly identified the problem; it does not follow that
-the standard remedy is free.
+draft report observed the behaviour and could only report it. This submission tests it,
+and the measurement is more interesting than the prediction. Diversity re-ranking does
+raise intra-list diversity as expected, but it costs accuracy when applied alone, and
+recovers that accuracy only alongside the collaborative stage (Section 5.5). The
+literature correctly identified the problem. It does not follow that the standard remedy
+is free.
 
 Deldjoo, Schedl and Knees (2024) show content-driven methods remain important in modern
-systems, particularly for cold start, privacy constraints, and explainability — all three
-of which describe NextTrack's situation. Afchar et al. (2022) connect explainability to
-user trust, motivating the requirement that every response carry a plain-language reason.
-That requirement had a defect throughout the draft period: one of its four signals could
-never fire (Section 4.6), a reminder that a claim about explainability is a claim about
+systems, particularly for cold start, privacy constraints and explainability. All three
+describe NextTrack's situation. Afchar et al. (2022) connect explainability to user
+trust, which motivates the requirement that every response carry a plain-language
+reason. That requirement carried a defect throughout the draft period: one of its four
+signals could never fire (Section 4.6). A claim about explainability is a claim about
 running code.
 
 ### 2.5 Collaborative filtering and hybrids: the tension this project had to resolve
 
 Koren, Bell and Volinsky (2009) established matrix factorisation as the workhorse of
-large-scale collaborative recommendation. It is unavailable to NextTrack by construction:
-latent factors are learned from a persistent user–item matrix. The underlying insight
-survives the constraint, though — two tracks heard by overlapping audiences are often
-related even when their acoustic and tag descriptions diverge, a relationship content
-features are structurally unable to represent.
+large-scale collaborative recommendation. It is unavailable to NextTrack by construction,
+since latent factors are learned from a persistent user–item matrix. The underlying
+insight survives the constraint. Two tracks heard by overlapping audiences are often
+related even when their acoustic and tag descriptions diverge, and content features are
+structurally unable to represent that relationship.
 
 Burke's (2002) hybrid taxonomy supplies the resolution. In a *cascade* hybrid one method
 generates candidates and another re-ranks them, and the re-ranking method need not share
 the first's data requirements. Çano and Morisio (2017) confirm in a systematic review
 that combined methods usually outperform single-method systems.
 
-The tension the cascade resolves is worth stating plainly, because the literature does
-not state it. Aggregate co-listening is consumable without any per-user storage: the
+The tension the cascade resolves deserves stating plainly, because the literature does
+not state it. Aggregate co-listening can be consumed without any per-user storage. The
 aggregation happens on the provider's side, and the consumer transmits only an artist
 identifier. Collaborative *evidence* and collaborative *surveillance* are therefore
-separable, contrary to what the Spotify architecture implies — a claim Section 5.5
-tests.
+separable, contrary to what the Spotify architecture implies. Section 5.5 tests that
+claim.
 
 ### 2.6 Session-based recommendation
 
@@ -258,54 +257,54 @@ NextTrack's problem. Hidasi et al. (2016) introduced GRU4Rec, Kang and McAuley (
 SASRec, and Sun et al. (2019) BERT4Rec; all three model the current sequence rather
 than a stored profile.
 
-The music-specific form of this problem is automatic playlist continuation, and two
+The music-specific form of this problem is automatic playlist continuation, and three
 sources bear directly on NextTrack's design. Bonnin and Jannach (2014) survey automated
-playlist generation and report a result this project should have taken more seriously at
-the design stage: simple popularity- and co-occurrence-based methods are strikingly hard
-to beat, and elaborate models frequently fail to justify their complexity. That finding
-is the reason *Most popular* is included as the strongest baseline in Section 5.3 rather
-than a token floor. The RecSys Challenge 2018 (Chen et al., 2018) then established
-playlist continuation at scale as a shared task, and its retrospective makes clear that
-candidate *generation* — not ranking — is where most systems win or lose, which is
-precisely where Section 5.4 locates this project's failure. Schedl et al. (2018) survey
-the open challenges in music recommender research and identify evaluation beyond
-accuracy, cold start, and the gap between offline proxies and listener satisfaction as
-the field's persistent difficulties; all three describe this project's position
-exactly.
+playlist generation and report a result I should have taken more seriously at the design
+stage: simple popularity- and co-occurrence-based methods are strikingly hard to beat,
+and elaborate models frequently fail to justify their complexity. That finding is why
+*Most popular* appears in Section 5.3 as the strongest baseline instead of a token
+floor. The RecSys Challenge 2018 (Chen et al., 2018) established playlist continuation
+at scale as a shared task. Its retrospective makes clear that candidate *generation*,
+not ranking, is where most systems win or lose. That is precisely where Section 5.4
+locates this project's failure. Schedl et al. (2018) then survey the open challenges in
+music recommender research, identifying evaluation beyond accuracy, cold start, and the
+gap between offline proxies and listener satisfaction. All three describe this project's
+position exactly.
 
-This project borrows the field's *problem definition* and its *evaluation protocol*
-without adopting its architectures: the evaluation segments listening histories on a
-30-minute inactivity gap and holds out the final track — the standard protocol here —
-and applies it to a non-neural engine. The architectures were rejected on the grounds
-Petrov and Macdonald (2022) document: their replicability study found BERT4Rec's
-published results sensitive to training-loss implementation details, a poor foundation
-for a project whose central claim must be defensible rather than merely competitive. A
-simpler pipeline also preserves what the neural models cannot offer — NextTrack can
-state which signal produced each recommendation, which is both a user-facing feature
-(Section 2.4) and what made the ablation in Section 5.5 interpretable.
+I borrowed the field's *problem definition* and its *evaluation protocol* without
+adopting its architectures. The evaluation segments listening histories on a 30-minute
+inactivity gap and holds out the final track, which is the standard protocol here, and
+applies it to a non-neural engine. I rejected the architectures on the grounds Petrov
+and Macdonald (2022) document: their replicability study found BERT4Rec's published
+results sensitive to training-loss implementation details. That is a poor foundation for
+a project whose central claim has to be defensible, not merely competitive. A simpler
+pipeline also preserves what the neural models cannot offer. NextTrack can state which
+signal produced each recommendation, which is both a user-facing feature (Section 2.4)
+and what made the ablation in Section 5.5 interpretable.
 
 ### 2.7 Music Information Retrieval, and infrastructure as a research risk
 
 Bogdanov et al. (2013) introduced ESSENTIA, the analysis library behind AcousticBrainz,
-which offered pre-computed descriptors — BPM, key, mode, loudness — for a large corpus.
-The preliminary design treated this as a solved dependency: acoustic features would be
-looked up rather than computed.
+which offered pre-computed descriptors such as BPM, key, mode and loudness for a large
+corpus. The preliminary design treated this as a solved dependency: acoustic features
+would be looked up, not computed.
 
-This turned out to be the review's weakest prediction, and the reason is instructive.
+That turned out to be the review's weakest prediction, and the reason is instructive.
 AcousticBrainz stopped accepting submissions in 2022, so its coverage is frozen and
 sparse relative to any current catalogue. The measured consequence is a sharp split
-(Section 5.3): the tracks real listeners actually played are far better covered than the
-candidate recordings retrieved by genre search. The engine therefore has genuine acoustic
-detail for the *history* far more often than for the *candidates* it must rank, which
-undercuts the acoustic dimensions precisely where they would do the most work. Schedl et
-al. (2021) argue metadata and acoustic features are complementary; here the genre TF-IDF
-block carries most of the ranking load because its partner is frequently absent.
+(Section 5.3). Tracks real listeners actually played are far better covered than the
+candidate recordings retrieved by genre search. The engine therefore holds genuine
+acoustic detail for the *history* far more often than for the *candidates* it must rank,
+which undercuts the acoustic dimensions exactly where they would do the most work.
+Schedl et al. (2021) argue metadata and acoustic features are complementary. Here the
+genre TF-IDF block carries most of the ranking load because its partner is frequently
+absent.
 
-The broader point is one the MIR literature does not usually make: dependence on
-centrally-hosted "free" research infrastructure is a longitudinal risk no code review
-surfaces. It appeared twice in this project — AcousticBrainz's decommissioning, and the
-YouTube Data API quota that forced the move to `ytmusicapi` — and a third time in a
-subtler form, discussed next.
+The broader point is one the MIR literature does not usually make. Depending on
+centrally-hosted "free" research infrastructure is a longitudinal risk that no code
+review surfaces. It appeared twice in this project, in AcousticBrainz's decommissioning
+and in the YouTube Data API quota that forced the move to `ytmusicapi`, and a third time
+in a subtler form, discussed next.
 
 ### 2.8 Privacy, REST, and the limits of statelessness
 
@@ -313,48 +312,49 @@ Cavoukian (2009) frames privacy-by-design as building privacy in from the outset
 GDPR Article 5(1)(c) establishes data minimisation as a legal principle (European
 Parliament, 2016). Yuan et al. (2023) sharpen why this matters technically: even
 federated collaborative filtering remains exposed to interaction-level membership
-inference. Their finding supports a stronger position than the one they take — if
+inference. Their finding supports a stronger position than the one they take. If
 privacy-preserving *storage* still leaks, the robust response is not to retain the data
 at all. Section 5.7 audits whether NextTrack's implementation honours that.
 
 Fielding (2000) defines statelessness as the REST constraint that each request contain
-everything needed to process it. The alignment with the privacy goal is close enough to
-look like a coincidence worth interrogating, and this project found the seam. REST
-statelessness constrains what the *server* remembers about a *client*; it says nothing
-about what the server caches about the *world*. NextTrack caches public per-track
-facts — and must, since three rate-limited upstreams otherwise make the system unusable
-(Section 5.6). Those caches are shared across callers, so one listener's request can
-make a later listener's request faster. That is not a user profile, but it is a real
-property, and Section 5.7 reports it rather than hiding behind the word "stateless".
+everything needed to process it. The alignment with the privacy goal looks close enough
+to be worth interrogating, and interrogating it exposed a seam. REST statelessness
+constrains what the *server* remembers about a *client*. It says nothing about what the
+server caches about the *world*. NextTrack caches public per-track facts, and it has to:
+three rate-limited upstreams otherwise make the system unusable (Section 5.6). Those
+caches are shared across callers, so one listener's request can make a later listener's
+request faster. That is not a user profile, but it is a real property, and Section 5.7
+reports it instead of hiding behind the word "stateless".
 
-Statelessness also carried an unstated obligation: if a server holds no state, identical
+Statelessness also carried an unstated obligation. If a server holds no state, identical
 requests ought to yield identical answers, and that reproducibility is much of what a
 stateless contract is worth to a developer. It did not hold, for a reason outside the
 code (Sections 4.7 and 5.6). Haro Peralta (2023) describes how FastAPI and OpenAPI
-support typed, self-documenting APIs — the toolchain NextTrack uses for validation,
-documentation and asynchronous request handling.
+support typed, self-documenting APIs. That is the toolchain NextTrack uses for
+validation, documentation and asynchronous request handling.
 
 ### 2.9 Evaluation methodology
 
 Shani and Gunawardana (2011) divide recommender evaluation into offline testing and
 user studies, and argue that algorithmic accuracy alone does not establish user value.
 Celma and Herrera (2008) and Kaminskas and Bridge (2016) show that music recommendation
-in particular needs beyond-accuracy measures — diversity, novelty, catalogue coverage —
-because listeners value material that is new yet still relevant. Bauer, Zangerle and
-Said (2024) warn against over-reliance on a narrow set of benchmark datasets.
+in particular needs beyond-accuracy measures such as diversity, novelty and catalogue
+coverage, because listeners value material that is new yet still relevant. Bauer,
+Zangerle and Said (2024) warn against over-reliance on a narrow set of benchmark
+datasets.
 
-Two of these shaped the evaluation directly. Kaminskas and Bridge's argument is why
-Section 5.5 reports intra-list diversity, novelty and coverage alongside accuracy, and why
-the ablation is read as a trade-off rather than a ranking. Bauer et al.'s warning is why
-the held-out data comes from real public ListenBrainz listening histories rather than a
-standard benchmark or a curated pool: sequences built by the developer from a
-genre-organised seed list would have been circular (Section 5.2).
+Two of these shaped my evaluation directly. Kaminskas and Bridge's argument is why
+Section 5.5 reports intra-list diversity, novelty and coverage alongside accuracy, and
+why I read the ablation as a trade-off instead of a ranking. Bauer et al.'s warning is
+why the held-out data comes from real public ListenBrainz listening histories, not a
+standard benchmark or a curated pool. Sequences I built myself from a genre-organised
+seed list would have been circular (Section 5.2).
 
 Shani and Gunawardana's division is also where this evaluation falls short, in exactly
-the way their argument anticipates. The offline half was delivered; the user study was
-not. Their claim — that offline accuracy does not establish user value — is not something
-this report can test, and Section 5.8 treats that as the principal threat to the validity
-of everything else reported here.
+the way their argument anticipates. The offline half was delivered. The user study was
+not. Their claim that offline accuracy does not establish user value is not something
+this report can test, and Section 5.8 treats that as the principal threat to the
+validity of everything else reported here.
 
 ### 2.10 Synthesis
 
@@ -364,8 +364,8 @@ the first.
 **A content-based core**, because it functions without stored user data (Whitman and
 Lawrence, 2002; Deldjoo et al., 2024; Schedl et al., 2021). Delivered, and measurably
 better than every baseline *at ranking, when the target is present in the candidate
-set* — a qualifier Section 5.4 makes non-negotiable. It is also weakened by the
-acoustic-coverage gap in Section 2.7 more than the literature would predict.
+set*. Section 5.4 makes that qualifier non-negotiable. The acoustic-coverage gap in
+Section 2.7 also weakens it more than the literature would predict.
 
 **A hybrid pipeline**, because no single signal covers every listening context and pure
 content ranking over-specialises (Lops et al., 2011; Burke, 2002; Koren et al., 2009;
@@ -374,37 +374,36 @@ contribution measured separately in Section 5.5.
 
 **Evaluation across both data and people** (Shani and Gunawardana, 2011; Celma and
 Herrera, 2008; Kaminskas and Bridge, 2016; Bauer et al., 2024). Delivered on the data
-side, including beyond-accuracy metrics and an ablation; not delivered on the human side.
-The gap between the literature's standard and this project's evidence is now narrower
-than at the draft stage, and precisely locatable, which is the most this report can
-honestly claim.
+side, including beyond-accuracy metrics and an ablation. Not delivered on the human
+side. The gap between the literature's standard and this project's evidence is narrower
+than it was at the draft stage, and it is precisely locatable. That is the most this
+report can honestly claim.
 
 ## Chapter 3: Design
 
 ### 3.1 Domain, users, and requirements
 
-NextTrack sits in music technology, combining recommendation, RESTful API design, and
-privacy-focused system design — a domain characterised by very large catalogues,
-irreducibly subjective taste, and evaluation conventions established by ISMIR and ACM
-RecSys.
+NextTrack sits in music technology, combining recommendation, RESTful API design and
+privacy-focused system design. The domain is characterised by very large catalogues,
+irreducibly subjective taste, and evaluation conventions set by ISMIR and ACM RecSys.
 
 Four user groups shape the design. *Privacy-conscious listeners*, the primary target,
 want recommendations without a permanent profile. *Application developers* want a
 lightweight endpoint without account-management overhead, which shapes the API contract:
 self-contained requests, typed schemas, machine-readable failures. *Shared-account
-households* want recommendations reflecting whoever is listening now rather than a
-blended history — a case statelessness handles for free, since there is no accumulated
+households* want recommendations that reflect whoever is listening now instead of a
+blended history. Statelessness handles that case for free, since there is no accumulated
 profile to contaminate. *Academic users* want an inspectable system, which is why every
-recommendation carries its reasoning and the evaluation is reproducible from the repository.
+recommendation carries its reasoning and the evaluation reproduces from the repository.
 
 The requirements these imply are, in priority order: (R1) the server retains nothing
 about a user between requests; (R2) a single request carries everything needed to
 answer it; (R3) every recommendation is explained in plain language; (R4) identical
 requests produce identical responses; (R5) failure of any single upstream degrades the
-result rather than the service; (R6) the system runs with no credentials. R4 was
-promoted to a first-class requirement during this submission after it was found not to
-hold (Section 4.7) — a stateless contract that drifts between calls offers a developer
-much less than it appears to.
+result but not the service; (R6) the system runs with no credentials. I promoted R4 to a
+first-class requirement during this submission, after finding it did not hold
+(Section 4.7). A stateless contract that drifts between calls offers a developer much
+less than it appears to.
 
 ### 3.2 Design justification
 
@@ -414,13 +413,13 @@ subpoenaed, or be inferred from (Yuan et al., 2023). The technical argument foll
 Whitman and Lawrence (2002) and Deldjoo et al. (2024): metadata-driven similarity
 carries enough signal to be useful without per-user state.
 
-The recommendation design is a **cascade hybrid** in Burke's (2002) sense: content-based
-candidate generation, aggregate collaborative re-ranking, and diversity
-post-processing. The cascade form is what makes the privacy constraint survivable. In a
-*weighted* or *feature-combination* hybrid the collaborative component would need
-per-user vectors; in a cascade, each stage only re-orders what the previous stage
-produced, so a stage may draw on population-level evidence without the system holding
-any individual's data.
+The recommendation design is a **cascade hybrid** in Burke's (2002) sense, running
+content-based candidate generation, then aggregate collaborative re-ranking, then
+diversity post-processing. The cascade form is what makes the privacy constraint
+survivable. In a *weighted* or *feature-combination* hybrid the collaborative component
+would need per-user vectors. In a cascade each stage only re-orders what the previous
+stage produced, so a stage can draw on population-level evidence without the system
+holding any individual's data.
 
 All three stages are implemented, and the design below describes what runs rather than
 what was intended; Section 3.7 lists what changed and why.
@@ -428,9 +427,9 @@ what was intended; Section 3.7 lists what changed and why.
 ### 3.3 System architecture
 
 The system has four layers (Figure 1): presentation, API, recommendation engine, and
-data/cache. The separation earned its keep — the collaborative and diversity stages were
-added without touching the API or presentation layers, and the evaluation harness reuses
-the engine layer directly by substituting the data layer beneath it.
+data/cache. The separation earned its keep. I added the collaborative and diversity
+stages without touching the API or presentation layers, and the evaluation harness
+reuses the engine layer directly by substituting the data layer beneath it.
 
 **Figure 1. NextTrack's four-layer architecture.** All components shown are implemented and tested. The dashed Last.fm client from the preliminary design has been replaced by the ListenBrainz client, for the reasons in Section 2.3.
 
@@ -469,16 +468,16 @@ day/night theme in `localStorage`; the server receives history only when `/recom
 is called, and only for the duration of that call.
 
 The **API layer** exposes five endpoints. Pydantic v2 validates every request with
-`extra="forbid"`, so an unrecognised field is rejected rather than silently ignored —
-a deliberate choice for an API meant to be integrated against, since silent acceptance
-of a misspelled parameter is a debugging trap.
+`extra="forbid"`, so an unrecognised field is rejected instead of silently ignored. That
+is deliberate for an API meant to be integrated against: silently accepting a misspelled
+parameter is a debugging trap.
 
 The **engine layer** runs the three cascade stages within a single request, with no
 persisted model and no training step. Nothing it computes outlives the response.
 
 The **data layer** integrates four upstream services and holds the caches. Every cache
-key is a public identifier — an MBID, an artist MBID, or a genre tag — so cached values
-are facts about the world rather than facts about a caller (Section 5.7).
+key is a public identifier, either an MBID, an artist MBID or a genre tag, so cached
+values are facts about the world and not facts about a caller (Section 5.7).
 
 ### 3.4 The two-identifier resolution model
 
@@ -487,14 +486,14 @@ not anticipate. Search results and Today's Top 5 carry a *YouTube video id*, but
 engine needs a *MusicBrainz id* to look up genre, acoustic, and collaborative data.
 
 NextTrack resolves this with a lazy two-identifier model (Figure 2). A search result
-plays immediately from its YouTube id; only when the user actually plays it does the
+plays immediately from its YouTube id. Only when the user actually plays it does the
 client call `POST /resolve`, which issues a fielded MusicBrainz query
-(`recording:"…" AND artist:"…"`) to pin the official recording rather than accept a
-free-text match. The resolved MBID replaces the YouTube id in that history entry.
-Entries that fail to resolve still play but are excluded from the next `/recommend`
-call, since only a valid MBID can seed one. A recommendation response already carries
-its own MBID, so continuing to listen never triggers another resolve — only the entry
-point does.
+(`recording:"…" AND artist:"…"`) to pin the official recording instead of accepting a
+free-text match. The resolved MBID then replaces the YouTube id in that history entry.
+Entries that fail to resolve still play, but they are excluded from the next
+`/recommend` call, since only a valid MBID can seed one. A recommendation response
+already carries its own MBID, so continuing to listen never triggers another resolve.
+Only the entry point does.
 
 **Figure 2. The two-identifier resolution flow.**
 
@@ -520,10 +519,10 @@ point does.
                             so the loop needs no further resolve
 ```
 
-The design is deliberately lazy rather than eager: resolving every search result up
-front would spend a rate-limited MusicBrainz request per result for tracks the user will
-never play, which at 1 req/sec is the difference between a search returning in under a
-second and one taking ten.
+Laziness here is deliberate. Resolving every search result up front would spend a
+rate-limited MusicBrainz request per result on tracks the user will never play. At
+1 req/sec that is the difference between a search returning in under a second and one
+taking ten.
 
 ### 3.5 The recommendation pipeline
 
@@ -534,35 +533,35 @@ with a sparse genre TF-IDF block. The history vectors are averaged into a sessio
 centroid, and candidates are ranked by cosine similarity to it.
 
 The genre vocabulary is **rebuilt per request**, scoped to the genres present in that
-request's history and candidates. This is a direct consequence of R1 rather than an
-oversight: a persistent global vocabulary would be shared mutable server state through
-which one request could, however faintly, influence another's feature space. The cost
-is that vector dimensionality varies between requests; the benefit is that every
-recommendation is reproducible from its own inputs alone.
+request's history and candidates. This follows directly from R1 and is not an oversight.
+A persistent global vocabulary would be shared mutable server state, through which one
+request could, however faintly, influence another's feature space. The cost is that
+vector dimensionality varies between requests. The benefit is that every recommendation
+is reproducible from its own inputs alone.
 
-**Stage 2 — aggregate collaborative.** Each history track's artist MBID is sent to
-ListenBrainz, which returns artists that the ListenBrainz population co-listens with
-that artist. Scores from different reference artists are raw co-occurrence counts whose
-magnitude depends on the reference artist's popularity, so each list is normalised
-against its own maximum before merging, and an artist matching several history artists
-takes the strongest normalised score rather than the sum — which keeps affinity bounded
-in [0, 1] and prevents a broadly popular artist accumulating an unbounded advantage.
+**Stage 2 — aggregate collaborative.** Each history track's artist MBID goes to
+ListenBrainz, which returns the artists that the ListenBrainz population co-listens with
+that artist. Those scores are raw co-occurrence counts, and their magnitude depends on
+the reference artist's popularity. Each list is therefore normalised against its own
+maximum before merging, and an artist matching several history artists takes the
+strongest normalised score instead of the sum. That keeps affinity bounded in [0, 1] and
+stops a broadly popular artist accumulating an unbounded advantage.
 
 The blend is `(1 − w)·content + w·collaborative` with `w = 0.3`, applied **only where
 collaborative evidence exists**. With no evidence the content score passes through
-unchanged. The alternative — always applying the blend — would scale every unmatched
-candidate by `(1 − w)`, a uniform rescaling that changes nothing about relative order
-but deflates the confidence score shown to the user. Given partial ListenBrainz
-coverage, that would have made most scores quietly meaningless.
+unchanged. Always applying the blend would scale every unmatched candidate by `(1 − w)`,
+a uniform rescaling that changes nothing about relative order but deflates the confidence
+score shown to the user. Given partial ListenBrainz coverage, that would have made most
+scores quietly meaningless.
 
 **Stage 3 — diversity.** Maximal Marginal Relevance (Carbonell and Goldstein, 1998)
-greedily selects by `λ·rel(c) − (1 − λ)·max_{s∈S} sim(c, s)`, with `λ = 0.7`. The
-design decision here is what goes into `S`. Classical MMR starts with `S` empty; but a
+greedily selects by `λ·rel(c) − (1 − λ)·max_{s∈S} sim(c, s)`, with `λ = 0.7`. The design
+decision here is what goes into `S`. Classical MMR starts with `S` empty, but a
 next-track recommender emits one item, so an empty `S` reduces MMR to plain relevance
 ranking and changes nothing. NextTrack therefore **seeds `S` with the listening
-history**, which makes the redundancy term measure how close a candidate is to music
-the listener has just heard — precisely the over-specialisation Lops et al. (2011)
-predict. `λ = 1` recovers pure relevance ranking, which is how the ablation in
+history**. The redundancy term then measures how close a candidate is to music the
+listener has just heard, which is exactly the over-specialisation Lops et al. (2011)
+predict. Setting `λ = 1` recovers pure relevance ranking, and that is how the ablation in
 Section 5.5 disables the stage without a separate code path.
 
 ### 3.6 Design decisions and alternatives considered
@@ -574,15 +573,16 @@ against. The cascade preserves R1.
 **ListenBrainz over Last.fm** (Section 2.3): the requirement was aggregate collaborative
 evidence, not a particular vendor.
 
-**Artist-level over track-level collaborative similarity.** Track-level similarity was
-implemented and tested first and returned empty results for most seeds in this catalogue;
-artist-level resolves for essentially any charting artist and captures the same
-cross-genre audience overlap — a decision made on measurement, not preference.
+**Artist-level over track-level collaborative similarity.** I implemented and tested
+track-level similarity first. It returned empty results for most seeds in this
+catalogue. Artist-level similarity resolves for essentially any charting artist and
+captures the same cross-genre audience overlap. Measurement decided this one, not
+preference.
 
-**Caching the candidate pool.** The preliminary design had no candidate cache. It was
-added after measurement showed MusicBrainz's tag search returns a different result set
-on every call, which broke R4 (Sections 4.7, 5.6). The alternative — accepting
-non-determinism — was rejected because reproducibility is a substantial part of what a
+**Caching the candidate pool.** The preliminary design had no candidate cache. I added
+one after measurement showed MusicBrainz's tag search returns a different result set on
+every call, breaking R4 (Sections 4.7, 5.6). Accepting the non-determinism was the
+alternative, and I rejected it because reproducibility is a substantial part of what a
 stateless API offers.
 
 **Bulk acoustic fetching.** Resolving ~50 candidates individually meant roughly a
@@ -590,9 +590,10 @@ hundred concurrent requests to a single decommissioned host and dominated cold-r
 latency. AcousticBrainz's bulk endpoints reduce this to four requests.
 
 **Rejecting Redis.** Marked in the code as deferred, and left deferred. The in-memory
-caches deliver the latency and determinism benefits Redis was wanted for within one
-process; a distributed cache is a scaling concern, not a correctness one, and adding it
-would have introduced a persistent store into a project whose premise is not having one.
+caches already deliver, within one process, the latency and determinism benefits Redis
+was wanted for. A distributed cache is a scaling concern, not a correctness one, and
+adding it would have introduced a persistent store into a project whose premise is not
+having one.
 
 ### 3.7 Changes since the draft design
 
@@ -615,16 +616,16 @@ implementation differ in any respect, Chapter 4 says so.
 ### 4.1 Technology choices
 
 The backend is Python 3.12 with FastAPI, uvicorn, Pydantic v2, NumPy, scikit-learn,
-httpx, `musicbrainzngs`, `ytmusicapi`, and `python-dotenv`. FastAPI was chosen for three
+httpx, `musicbrainzngs`, `ytmusicapi` and `python-dotenv`. I chose FastAPI for three
 properties this project needs together: validation from type annotations, OpenAPI
-documentation generated from those same annotations (satisfying Objective 3 without a
-parallel spec to keep in sync), and native async handling, which matters because a single
-recommendation fans out to four independent external services.
+documentation generated from those same annotations (which satisfies Objective 3 without
+a parallel spec to keep in sync), and native async handling. The last matters because a
+single recommendation fans out to four independent external services.
 
 `musicbrainzngs` and `ytmusicapi` are both synchronous, so every call into them is
-wrapped in `asyncio.to_thread`; AcousticBrainz and ListenBrainz are reached through
-async `httpx` directly. This mixed model is the reason the concurrency work in
-Section 4.5 was necessary.
+wrapped in `asyncio.to_thread`. AcousticBrainz and ListenBrainz are reached through async
+`httpx` directly. That mixed model is why the concurrency work in Section 4.5 was
+necessary.
 
 The frontend is React 18, TypeScript, Vite, Tailwind CSS, `react-youtube`, and
 `lucide-react`, with a deliberately non-generic visual identity (Section 4.9).
@@ -658,14 +659,14 @@ The horizontal rule is load-bearing and is discussed in Section 4.5.
 `features.build_feature_vector` concatenates the 16 fixed acoustic dimensions with a
 genre TF-IDF block. The weighting uses the standard smoothed form,
 `idf(g) = ln((1 + N) / (1 + df(g))) + 1`, so a genre appearing on most observed tracks
-("rock", "pop") contributes less than one appearing on few ("shoegaze", "math rock") —
-Whitman and Lawrence's (2002) metadata-similarity intuition applied at tag level rather
-than free-text level. The vocabulary is module-level mutable state, which is what makes
-vectors within a request comparable, and what made request isolation a genuine
+("rock", "pop") contributes less than one appearing on few ("shoegaze", "math rock").
+This is Whitman and Lawrence's (2002) metadata-similarity intuition applied at tag level
+instead of free-text level. The vocabulary is module-level mutable state. That is what
+makes vectors within a request comparable, and also what made request isolation a genuine
 engineering problem (Section 4.5).
 
-`similarity.cosine_score` clamps to [0, 1] and returns 0 for a zero vector rather than
-propagating scikit-learn's undefined-cosine behaviour — a candidate with no genre tags and
+`similarity.cosine_score` clamps to [0, 1] and returns 0 for a zero vector instead of
+propagating scikit-learn's undefined-cosine behaviour. A candidate with no genre tags and
 default acoustics can legitimately produce one.
 
 ### 4.4 The collaborative stage
@@ -690,12 +691,12 @@ def build_affinity(similar_by_artist: dict[str, dict[str, float]]) -> dict[str, 
     return affinity
 ```
 
-Two decisions are encoded here. Normalising per reference artist is necessary because
-a count of 900 against Queen and a count of 20 against an obscure artist represent
-comparable strengths of association; comparing them raw would let popularity dominate.
-Taking the maximum rather than the sum keeps affinity bounded in [0, 1], so an artist
-similar to every track in a five-track history cannot accumulate a score that swamps
-the content signal.
+Two decisions are encoded here. Normalising per reference artist is necessary because a
+count of 900 against Queen and a count of 20 against an obscure artist represent
+comparable strengths of association, and comparing them raw would let popularity
+dominate. Taking the maximum instead of the sum keeps affinity bounded in [0, 1], so an
+artist similar to every track in a five-track history cannot accumulate a score that
+swamps the content signal.
 
 The blend then applies only where evidence exists:
 
@@ -709,36 +710,37 @@ def blend(content_score: float, collab_score: float, weight: float) -> float:
 This is the difference between a confidence score that means something and one that is
 uniformly depressed by the coverage of a third-party service.
 
-Every failure mode of the ListenBrainz client — unknown artist, HTTP error, malformed
-payload, connection failure, timeout — returns an empty dict, which the pipeline reads
-as "no collaborative evidence". A failure is deliberately *not* cached, so a transient
-outage does not poison an artist's entry for the rest of the process's life. Fifteen
-tests cover the client, most of them failure paths.
+Every failure mode of the ListenBrainz client returns an empty dict: unknown artist,
+HTTP error, malformed payload, connection failure, timeout. The pipeline reads that as
+"no collaborative evidence". A failure is deliberately *not* cached, so a transient
+outage cannot poison an artist's entry for the rest of the process's life. Fifteen tests
+cover the client, most of them failure paths.
 
 ### 4.5 Request isolation under concurrency
 
 The genre vocabulary is a process-global singleton. If one request's
 reset-observe-build sequence interleaved with another's on the event loop, genres from
-one listener's session could enter another's feature vectors — a direct violation of R1
-and R4, and a defect that is invisible to inspection and intermittent in testing.
+one listener's session could enter another's feature vectors. That violates R1 and R4
+directly, and it is the worst kind of defect: invisible to inspection, intermittent in
+testing.
 
-The fix is structural: the whole sequence lives in `recommender._rank`, a synchronous
-function containing no `await`, and the event loop cannot switch tasks except at an await
-point. Every operation that *does* await — resolving history, retrieving candidates, bulk
-acoustics, ListenBrainz affinity — was hoisted above it, which is why step 6 in Figure 3
-precedes step 7 even though the collaborative score is consumed only during ranking. The
-invariant is stated in the function's docstring so a future edit introducing an `await`
-reads as a correctness change rather than a style change, and
-`test_recommend_concurrency.py` asserts it both by planting foreign vocabulary before a
-request and by gathering two concurrent recommendations.
+The fix is structural. The whole sequence lives in `recommender._rank`, a synchronous
+function containing no `await`, and the event loop cannot switch tasks except at an
+await point. I hoisted every operation that *does* await above it — resolving history,
+retrieving candidates, bulk acoustics, ListenBrainz affinity. That is why step 6 in
+Figure 3 precedes step 7, even though ranking is the only thing that consumes the
+collaborative score. I stated the invariant in the function's docstring so that a future
+edit introducing an `await` reads as a correctness change and not a style change, and
+`test_recommend_concurrency.py` asserts it two ways: by planting foreign vocabulary
+before a request, and by gathering two concurrent recommendations.
 
 ### 4.6 Explanation generation, and a defect that hid inside it
 
 `rationale.generate_rationale` builds one sentence from whichever signals actually
 clear their thresholds: collaborative affinity ≥ 0.15, at least two shared genre tags,
 tempo within 10 BPM of the history average, energy within 0.15, or a matching key and
-mode. The collaborative signal is named first when present, because it is the only one
-sourced from other listeners rather than from the track's own metadata, and a reader
+mode. When the collaborative signal is present it is named first. It is the only one
+sourced from other listeners instead of from the track's own metadata, and a reader
 should be able to tell those apart.
 
 This code contained a defect for the entire draft period. The session's most common key
@@ -748,25 +750,26 @@ was computed with a `Counter` keyed on `(pitch, mode)` tuples, then unpacked as:
 common_pitch, common_mode = key_counts.most_common(1)[0]     # wrong
 ```
 
-`Counter.most_common` yields `(item, count)` pairs, so `common_pitch` was bound to the
-whole `('F#', 'minor')` tuple and `common_mode` to an integer — accepted silently,
-because both sides have arity two. The key-match branch therefore compared a string
-against a tuple and could *never* be true: the "compatible key" explanation was
-unreachable for every recommendation the system had ever produced, and the rendered key
-read `"('F#', 'minor') 2"`.
+`Counter.most_common` yields `(item, count)` pairs. So `common_pitch` was bound to the
+whole `('F#', 'minor')` tuple and `common_mode` to an integer, and Python accepted it
+silently because both sides have arity two. The key-match branch was therefore comparing
+a string against a tuple and could *never* be true. The "compatible key" explanation had
+been unreachable for every recommendation the system had ever produced, and the rendered
+key read `"('F#', 'minor') 2"`.
 
-No test caught it, because the rationale tests exercised the genre, tempo and energy
-signals but never constructed a candidate matching on key alone. `mypy` did, immediately.
-Three regression tests now cover it, including one whose candidate deliberately fails
-every threshold except key. A project claiming explainability is claiming something about
-running code, and what found this was static analysis rather than more testing of paths
-already believed to work.
+No test caught it. The rationale tests exercised the genre, tempo and energy signals but
+never constructed a candidate that matched on key alone. `mypy` caught it immediately.
+Three regression tests now cover the branch, including one whose candidate deliberately
+fails every threshold except key. A project claiming explainability is claiming something
+about running code, and what found this was static analysis, not more testing of paths I
+already believed worked.
 
 ### 4.7 Reproducibility: a property that did not hold
 
 The draft report stated that identical histories "always produce the same candidate
-search". A determinism assertion added to the live API-capture script showed the
-end-to-end property was false: the same request twice returned different tracks.
+search". I added a determinism assertion to the live API-capture script and it showed
+the end-to-end property was false. The same request, sent twice, returned different
+tracks.
 
 The cause was not in NextTrack. Probing MusicBrainz directly:
 
@@ -776,14 +779,15 @@ alternative rock  run1 == run2: False    |symmetric difference| = 38
 ```
 
 Two consecutive tag searches for `grunge` shared **zero** of their fifty results.
-Thousands of recordings tie on relevance and the tie order is arbitrary, so the
-candidate pool — and therefore the winner — changed between calls. Genre *selection*
-was deterministic, exactly as the draft claimed; the search results were not.
+Thousands of recordings tie on relevance, and the tie order is arbitrary, so the
+candidate pool changed between calls, and with it the winning recommendation. Genre
+*selection* was deterministic, exactly as the draft claimed. The search results were
+not.
 
-The fix has two parts, both necessary. Candidate pools are cached per genre tag with a
-one-hour TTL, and each pool is sorted by MBID before storage so no ordering dependence
-on the upstream survives. Like the other caches this holds a public per-tag fact and
-nothing about a caller.
+The fix has two parts and both are necessary. Candidate pools are cached per genre tag
+with a one-hour TTL, and each pool is sorted by MBID before storage so that no ordering
+dependence on the upstream survives. Like the other caches, this holds a public per-tag
+fact and nothing about a caller.
 
 It also produced the single largest performance improvement in the project, because
 three rate-limited MusicBrainz searches were the dominant cost of every recommendation:
@@ -796,27 +800,27 @@ three rate-limited MusicBrainz searches were the dominant cost of every recommen
 
 *Table 1. End-to-end latency before and after candidate-pool caching, same three requests against live upstreams. "Cold" = empty candidate-pool cache in a running process with other caches warm, not a cold start; Table 5 reports that case and Section 5.6 reconciles them.*
 
-The honest residual is that determinism now holds for the cache TTL rather than
-absolutely: once a pool expires, an identical request may legitimately return a
-different track because the upstream catalogue view has changed. That is a property of
-MusicBrainz, not something NextTrack can fix, and Section 5.6 reports it as a
-limitation.
+The honest residual is that determinism now holds for the cache TTL, not absolutely.
+Once a pool expires, an identical request may legitimately return a different track,
+because the upstream catalogue view has changed. That is a property of MusicBrainz and
+not something NextTrack can fix. Section 5.6 reports it as a limitation.
 
 ### 4.8 Acoustic features: bulk retrieval, and a proxy that measured the wrong thing
 
-Resolving a candidate pool meant one AcousticBrainz low-level and one high-level request
-per candidate — roughly a hundred concurrent requests to a single largely-decommissioned
-host, which measurement identified as the dominant remaining cold-start cost.
-AcousticBrainz's bulk endpoints accept up to 25 identifiers per call, reducing this to
-four requests. `get_features_bulk` batches, issues both levels concurrently, and returns
-an entry for every requested MBID with `None` meaning "no data" — deliberately identical
-to what an outage produces, since the caller must handle both the same way.
+Resolving a candidate pool meant one AcousticBrainz low-level request and one
+high-level request per candidate. That is roughly a hundred concurrent requests to a
+single largely-decommissioned host, and measurement identified it as the dominant
+remaining cold-start cost. The bulk endpoints accept up to 25 identifiers per call,
+which reduces the work to four requests. `get_features_bulk` batches, issues both levels
+concurrently, and returns an entry for every requested MBID, with `None` meaning "no
+data". That is deliberately identical to what an outage produces, since the caller has
+to handle both the same way.
 
 The more consequential problem was what the acoustic block *contained*. AcousticBrainz
-publishes no direct energy descriptor, so the implementation derived one from the
-high-level **danceability** classifier, with a `# TODO: verify field name` attached.
-Verifying it showed the field name was correct and the *choice of field* was wrong.
-Queried live for The Killers' "Mr. Brightside":
+publishes no direct energy descriptor, so I derived one from the high-level
+**danceability** classifier and left a `# TODO: verify field name` against it. Verifying
+it showed the field name was correct and the *choice of field* was wrong. Queried live
+for The Killers' "Mr. Brightside":
 
 | Classifier | Probability |
 |---|---:|
@@ -827,44 +831,44 @@ Queried live for The Killers' "Mr. Brightside":
 
 *Table 2. High-level AcousticBrainz classifiers for a single track, showing that danceability is close to orthogonal to energy for guitar music.*
 
-Danceability measures whether a track invites dancing, not how energetic it is, so the
-value used as "energy" was 0.02 for one of the most energetic tracks in the seed pool.
-This propagated three ways: cosine similarity ranked on a near-meaningless coordinate;
-the "matching energy level" rationale could fire between tracks with nothing energetic in
-common; and the card displayed "ENERGY 0.00" for a rock song, which reads as broken. The
-replacement averages `mood_aggressive`, `mood_party` and the complement of `mood_relaxed`
-— three classifiers that do bear on energy and agree on the example above — scoring the
-same track 0.937.
+Danceability measures whether a track invites dancing, not how energetic it is. So the
+value being used as "energy" was 0.02 for one of the most energetic tracks in the seed
+pool. That propagated three ways. Cosine similarity ranked on a near-meaningless
+coordinate. The "matching energy level" rationale could fire between two tracks with
+nothing energetic in common. And the card displayed "ENERGY 0.00" for a rock song, which
+simply reads as broken. The replacement averages `mood_aggressive`, `mood_party` and the
+complement of `mood_relaxed`, three classifiers that do bear on energy and that agree on
+the example above. They score the same track 0.937.
 
-Because the evaluation corpus stores *parsed* features, this change would have left it
-stale, so a `refresh-acoustics` phase re-derives the whole corpus through the bulk
-endpoints in seconds and runs as part of the harvest.
+The evaluation corpus stores *parsed* features, so this change would have left it stale.
+A `refresh-acoustics` phase now re-derives the whole corpus through the bulk endpoints
+in seconds, and runs as part of the harvest.
 
 ### 4.9 Frontend implementation
 
 The React frontend mirrors the backend's care about request correctness.
 
 `useRecommendation` tags every fetch with a monotonically increasing request id and
-discards any response whose id is stale. This prevents a slow earlier fetch from
-overwriting a newer result when the user double-clicks or radio mode auto-advances
-mid-request. Both the success and the failure path are guarded — a stale *rejection*
-clearing a newer valid recommendation is the subtler of the two bugs, and is covered by
-its own test.
+discards any response whose id is stale. That prevents a slow earlier fetch from
+overwriting a newer result when the user double-clicks, or when radio mode auto-advances
+mid-request. Both the success and the failure path are guarded. A stale *rejection*
+clearing a newer valid recommendation is the subtler of the two bugs, and it has its own
+test.
 
 `useLocalStorageState` validates anything read back from `localStorage` against a type
 guard, so a stale schema or a hand-edited value hydrates the default rather than reaching
 components with the wrong shape.
 
-`playTrack` was hardened during this pass. It awaited `resolveTrack` without error
+I hardened `playTrack` during this pass. It awaited `resolveTrack` without error
 handling, so a MusicBrainz outage (a 503) rejected the promise and abandoned the rest of
-the function: the track played but never entered the setlist, no recommendation was
+the function. The track played but never entered the setlist, no recommendation was
 requested, and the only trace was an unhandled rejection in the console. A failed resolve
 is now treated as "unresolved", so playback and history still work.
 
 **Demo mode** (`VITE_DEMO_MODE=true`) swaps every network call for deterministic mock
-data, and was broken end to end: mock tracks carried placeholder identifiers like
+data, and it was broken end to end. Mock tracks carried placeholder identifiers like
 `mock-0001-teen-spirit`, which fail the `isMbid()` guard, so playing anything from search
-or Today's Top 5 produced "we couldn't identify that track" — on precisely the path a
+or Today's Top 5 produced "we couldn't identify that track" — on exactly the path a
 demonstration would take. Mock tracks now carry *real* MusicBrainz identifiers, and the
 resolve stub mirrors the live endpoint's contract including its `null` return, so demo
 mode exercises the live code path.
@@ -890,18 +894,17 @@ The backend carries **121 tests** across fourteen files (up from 37 at the draft
 and the frontend **29** across three, using Vitest and React Testing Library where it
 previously had none.
 
-One property is worth describing because it was a claim before it was a mechanism. The
-README and draft report both stated that all external APIs are mocked and no real
-network calls are made. That was a convention: nothing enforced it, and the
-ListenBrainz health probe was in fact making live requests from the suite. An autouse
-fixture now guards the boundary — and needed two layers to do it. A socket-level guard
-catches the synchronous clients, but **not** async `httpx`: on Windows the Proactor
-event loop connects through overlapped I/O rather than `socket.socket.connect`, so an
-unmocked async client passes straight through. That gap was not hypothetical; the
-AcousticBrainz bulk client made live requests from the suite until it was found. An
-httpx-level guard inspecting the request URL closes it, and `test_network_guard.py`
-tests the guard itself so a future gap fails there rather than silently re-enabling
-live traffic.
+One property deserves describing, because it was a claim before it was a mechanism. The
+README and draft report both stated that all external APIs are mocked and no real network
+calls are made. That was a convention. Nothing enforced it, and the ListenBrainz health
+probe was in fact making live requests from the suite. An autouse fixture now guards the
+boundary, and it needed two layers to do so. A socket-level guard catches the synchronous
+clients but **not** async `httpx`, because on Windows the Proactor event loop connects
+through overlapped I/O instead of `socket.socket.connect`, so an unmocked async client
+passes straight through. That gap was not hypothetical: the AcousticBrainz bulk client
+made live requests from the suite until I found it. An httpx-level guard inspecting the
+request URL closes it, and `test_network_guard.py` tests the guard itself, so a future
+gap fails there instead of silently re-enabling live traffic.
 
 Beyond the suite, a 32-case adversarial sweep (`scripts/adversarial_sweep.py`) throws
 hostile input at a running instance — wrong types and arity, 100 KB strings,
@@ -915,9 +918,9 @@ sweep now passes 32/32.
 Static analysis runs clean: `ruff` (with import ordering, bugbear, comprehension,
 modernisation and unused-argument rules), `mypy` over all 23 backend source files, and
 `tsc --noEmit` over the frontend. `mypy` earned its place by finding the defect in
-Section 4.6. The frontend dependency tree was also repaired: Vite 8 was installed
-against a plugin declaring support only to Vite 7, leaving `npm ls` reporting an invalid
-tree, and `npm audit` reported two high-severity advisories. Both are resolved.
+Section 4.6. I also repaired the frontend dependency tree. Vite 8 had been installed
+against a plugin declaring support only to Vite 7, which left `npm ls` reporting an
+invalid tree and `npm audit` reporting two high-severity advisories. Both are resolved.
 
 ### 4.11 Reproducible evaluation tooling
 
@@ -928,10 +931,10 @@ candidate-retrieval responses; `offline_eval.py` runs seven arms over the snapsh
 `make_figures.py` renders every figure from the raw results, so no number in a figure is
 typed by hand.
 
-The decision that matters most for validity: `offline_eval.py` calls
+One decision matters most for validity. `offline_eval.py` calls
 `recommender.recommend_ranked` itself, with only the data clients redirected at the
 snapshot. An evaluation that re-implements the scoring logic measures the
-re-implementation; here the code under measurement is the code that serves requests.
+re-implementation. Here the code under measurement is the code that serves requests.
 
 ## Chapter 5: Evaluation
 
@@ -941,35 +944,34 @@ The evaluation answers three questions. Can the engine predict a real listener's
 track better than obvious alternatives? Does each cascade stage earn its place? And is
 the system correct, reproducible and robust enough to be trusted?
 
-It cannot answer a fourth the original plan treated as central — whether listeners
-*like* what NextTrack chooses — because **no user study was conducted** (Objective 7;
-reasons in Section 1.4). In partial compensation the offline work was widened: real
-listening sessions rather than curated ones, three baselines, beyond-accuracy metrics, a
+It cannot answer the fourth question the original plan treated as central: whether
+listeners *like* what NextTrack chooses. **No user study was conducted** (Objective 7;
+reasons in Section 1.4). In partial compensation I widened the offline work to use real
+listening sessions instead of curated ones, three baselines, beyond-accuracy metrics, a
 retrieval/ranking decomposition, paired significance testing with effect sizes, a
 metadata control, and a live latency benchmark.
 
 ### 5.2 Methodology and its justification
 
 **Protocol.** Each held-out session supplies a listening history and one ground-truth
-next track, and all seven arms rank the *same* candidate set for the *same* session, so
-differences are attributable to ranking rather than retrieval luck.
+next track. All seven arms rank the *same* candidate set for the *same* session, so any
+difference is attributable to ranking and not to retrieval luck.
 
-**Ground truth from real listening sessions.** Building held-out sequences from the
-project's own curated seed pool would have been circular — measuring how well a
-genre-driven engine reproduces its author's groupings. The ground truth instead comes
-from **real, voluntarily-public ListenBrainz listening histories**, segmented on a
-30-minute inactivity gap (Hidasi et al., 2016) with the final track held out. Their
-construction knows nothing about genre, tempo or co-listening, so the ground truth is
-independent of every signal the engine ranks on — addressing Bauer et al.'s (2024)
-warning against convenient benchmark data.
+**Ground truth from real listening sessions.** Building held-out sequences from my own
+curated seed pool would have been circular, measuring only how well a genre-driven engine
+reproduces its author's groupings. The ground truth comes instead from **real,
+voluntarily-public ListenBrainz listening histories**, segmented on a 30-minute
+inactivity gap (Hidasi et al., 2016) with the final track held out. Their construction
+knows nothing about genre, tempo or co-listening, so the ground truth is independent of
+every signal the engine ranks on, which addresses Bauer et al.'s (2024) warning against
+convenient benchmark data.
 
 **Realistic distractors.** The evaluation replays **real MusicBrainz tag-search
-responses** in MusicBrainz's own order, so the engine faces the production pool, obscure
-recordings included.
+responses** in MusicBrainz's own order, so the engine faces the production pool.
 
-**The engine evaluates itself, reproducibly** (Section 4.11): the harness calls the
-production ranking code with only the data clients redirected at a committed snapshot and
-the random baseline seeded, so `scripts/offline_eval.py` reproduces every number here.
+**The engine evaluates itself, reproducibly** (Section 4.11). The harness calls the
+production ranking code, redirecting only the data clients at a committed snapshot and
+seeding the random baseline, so `scripts/offline_eval.py` reproduces every number.
 
 ### 5.3 Dataset, baselines and metrics
 
@@ -979,41 +981,42 @@ catalogue of 5,844 that includes 4,985 real retrieved candidates. Two reductions
 throughout: **138 sessions are rankable** (two resolved no history track to a genre, so
 produced no pool, and are excluded from every arm rather than scored as misses), and the
 322 names resolve to **281 distinct MusicBrainz artist identifiers**, the rest being
-collaboration credits and name variants collapsing onto identifiers already counted. Coverage is quoted against the 281, since that is what the collaborative
-stage queries: **94.0%** have ListenBrainz similarity data, while **65.8%** of session
-tracks have AcousticBrainz data. A median of five genre tags per track (7% carry none)
-means the genre block does most of the ranking work.
+collaboration credits and name variants collapsing onto identifiers already counted. I
+quote coverage against the 281, since that is what the collaborative stage queries:
+**94.0%** have ListenBrainz similarity data, while **65.8%** of session tracks have
+AcousticBrainz data. A median of five genre tags per track (7% carry none) means the
+genre block does most of the ranking work.
 
 **Baselines.** *Random (retrieved pool)* isolates ranking by giving chance the same
-100-item set every other arm receives. *Most popular* ranks that set by how many corpus
-sessions contain each track — the strongest non-personalised baseline, the one Bonnin and
-Jannach (2014) warn is harder to beat than it looks. *Random (whole catalogue)* samples
-all 5,844 tracks instead, so it does not share the others' protocol and appears in
-Table 4 only as a sanity floor.
+100-item set every arm receives. *Most popular* ranks that set by how many corpus
+sessions contain each track. It is the strongest non-personalised baseline, and the one
+Bonnin and Jannach (2014) warn is harder to beat than it looks. *Random (whole
+catalogue)* samples all 5,844 tracks instead, so it does not share the others' protocol
+and appears in Table 4 only as a sanity floor.
 
 **Ablation.** Content only; content + collaborative; content + MMR; full cascade.
 Disabling a stage sets its parameter to the neutral value (collaborative weight 0, MMR
-λ = 1) rather than branching, so the ablation exercises production code.
+λ = 1) instead of branching, so the ablation exercises production code.
 
 **Metrics.** HitRate@K and nDCG@K measure accuracy, the latter sensitive to *where* the
 track landed, and MRR summarises rank position. Intra-list diversity, novelty and
 coverage are the beyond-accuracy measures Celma and Herrera (2008) and Kaminskas and
-Bridge (2016) argue music recommendation requires. Reachability is reported separately
-because it bounds every accuracy figure above.
+Bridge (2016) argue music recommendation needs. Reachability is reported separately,
+because it bounds every accuracy figure.
 
-**Significance.** Arms score the same sessions, so results are paired and tested with a
-Wilcoxon signed-rank test (Wilcoxon, 1945) rather than a t-test, since per-session nDCG
-is bounded, heavily tied at zero and not normal. Six pairwise comparisons inflate the
-family-wise error rate, so p-values are quoted uncorrected and checked under
-Holm–Bonferroni at α = 0.05, which changes no conclusion. Effect sizes are matched-pairs
-rank-biserial correlations *r*. Appendix C gives the full table.
+**Significance.** Arms score the same sessions, so results are paired. I used a Wilcoxon
+signed-rank test (Wilcoxon, 1945) instead of a t-test, since per-session nDCG is bounded,
+heavily tied at zero and not normal. Six pairwise comparisons inflate the family-wise
+error rate, so p-values are quoted uncorrected and then checked under Holm–Bonferroni at
+α = 0.05, which changes no conclusion. Effect sizes are matched-pairs rank-biserial
+correlations *r*. Appendix C gives the full table.
 
 
 ### 5.4 Experiment A — the retrieval stage cannot reach the target
 
 The first result reframes everything after it. For each of the 138 rankable sessions the
 engine's genre-gated MusicBrainz search ran exactly as in production, producing a mean
-pool of 145.7 candidates, checked for the track the listener played next.
+pool of 145.7 candidates, which I checked for the track played next.
 
 | Held-out track present in the retrieved pool? | Share of sessions |
 |---|---:|
@@ -1027,29 +1030,29 @@ pool of 145.7 candidates, checked for the track the listener played next.
 
 **Figure 6.** the same result as a chart: the held-out track is never in the pool by identity or by song, and its artist appears in one pool in eight.
 
-**Not once in 138 sessions did retrieval surface the track the listener played next** —
-neither the exact recording nor the same song under another release identifier — and even
+**Not once in 138 sessions did retrieval surface the track the listener played next.**
+Not the exact recording, and not the same song under another release identifier. Even
 the artist appeared in only 13% of pools. End-to-end accuracy is therefore exactly zero
 for every arm, baselines included, and no ranking improvement could change it.
 
 The cause is visible in the pools. `search_recordings(tag=…)` returns only recordings
-carrying a folksonomy tag — a small, arbitrary, long-tail slice of the catalogue.
-Searching `electronic` returns Perky Chap, 2/5 BZ and Nuno Canavarro; the corpus
-listeners were playing Röyksopp, Jon Hopkins and Ott. The populations barely intersect,
-and widening the pool would only draw more of the same tail.
+carrying a folksonomy tag, a small and arbitrary long-tail slice of the catalogue.
+Searching `electronic` returns Perky Chap, 2/5 BZ and Nuno Canavarro. The corpus
+listeners were playing Röyksopp, Jon Hopkins and Ott. The two populations barely
+intersect, and widening the pool would only draw more of the same tail.
 
-This contradicts an assumption carried unexamined from the preliminary report onward:
+This contradicts an assumption I carried unexamined from the preliminary report onward:
 that MusicBrainz tag search is a viable candidate generator. It generates candidates for
-*tagged recordings*, a different and much smaller thing. Since end-to-end accuracy is
-uniformly zero it cannot discriminate between configurations, so ranking is measured
-separately below.
+*tagged recordings*, which is a different and much smaller thing. Because end-to-end
+accuracy is uniformly zero it cannot discriminate between configurations, so I measured
+ranking separately.
 
 ### 5.5 Experiment B — ranking quality, and what each stage contributes
 
 **Protocol, stated plainly because it matters.** The held-out track is **injected** into
-a 100-item candidate set — itself plus 99 negatives sampled from the pool the engine
-really retrieved — and every arm ranks that same set. This is the sampled-negatives
-protocol standard in sequential recommendation (Kang and McAuley, 2018; Sun et al., 2019)
+a 100-item candidate set, itself plus 99 negatives sampled from the pool the engine
+really retrieved, and every arm ranks that same set. This is the sampled-negatives
+protocol standard in sequential recommendation (Kang and McAuley, 2018; Sun et al., 2019),
 and it measures ranking *given* reachability. It is **not** end-to-end accuracy, which
 Section 5.4 reports as zero.
 
@@ -1077,57 +1080,59 @@ Section 5.4 reports as zero.
 
 **Figure 9.** every arm plotted on the accuracy/diversity plane.
 
-**Against the baselines, the engine wins decisively — within the injected-target
+**Against the baselines, the engine wins decisively, within the injected-target
 protocol.** The full cascade beats random selection within the same candidate set by
-0.656 nDCG (r = 0.98) and popularity by 0.464 (r = 0.89), both p < 0.00001 and surviving
-Holm–Bonferroni. Random selection over the whole catalogue scores zero, the expected
-1-in-5,844 result, confirming the metrics behave. This supports the project's premise *as
-a claim about ranking*: session context alone ranks a listener's actual next track far
-above chance and popularity — whenever that track is in the set being ranked, which
-Section 5.4 shows production retrieval never achieves.
+0.656 nDCG (r = 0.98) and popularity by 0.464 (r = 0.89), both at p < 0.00001 and both
+surviving Holm–Bonferroni. Random selection over the whole catalogue scores zero, the
+expected 1-in-5,844 result, which confirms the metrics behave. This supports the
+project's premise *as a claim about ranking*. Session context alone ranks a listener's
+actual next track far above chance and popularity, whenever that track is in the set
+being ranked. Section 5.4 shows production retrieval never achieves that.
 
 **The collaborative stage earns its place.** ListenBrainz co-listening affinity raises
 nDCG@10 from 0.648 to 0.704 (p = 0.003, r = 0.85) while *also* raising intra-list
-diversity (0.367 → 0.421), which no other single change did. One qualifier matters: only
-16 of 138 sessions changed score at all, so the stage acts rarely and decisively rather
-than broadly. This is the clearest positive result for work done in this submission, and the
-empirical form of the argument in Section 2.5: aggregate behavioural evidence adds
-information content features cannot represent, obtained without storing anything about a
-user.
+diversity, from 0.367 to 0.421. No other single change did both. One qualifier matters:
+only 16 of 138 sessions changed score at all, so the stage acts rarely and decisively
+instead of broadly. This is the clearest positive result for work done in this
+submission, and it is the empirical form of the argument in Section 2.5. Aggregate
+behavioural evidence adds information that content features cannot represent, and it is
+obtained without storing anything about a user.
 
 **The diversity stage does what MMR should, including the cost.** MMR *lowers* top-1
 accuracy from 0.623 to 0.565 while *raising* top-10 accuracy from 0.674 to 0.877 and
-doubling diversity from 0.367 to 0.735 — relevance sacrificed at the head of the list for
+doubling diversity from 0.367 to 0.735: relevance sacrificed at the head of the list for
 a less redundant list overall. On nDCG@10 the net movement is upward but not significant
-(0.648 → 0.701, p = 0.095): a non-significant improvement, not a cancellation.
+(0.648 → 0.701, p = 0.095). A non-significant improvement, then, not a cancellation.
 
-**Stacking the two stages does not improve on either alone** — the ablation's least
-convenient result. The full cascade scores *below* content + MMR on HitRate@10 (0.855 vs
-0.877) and nDCG@10 (0.695 vs 0.701), and below content + collaborative on nDCG@10 (0.695
-vs 0.704). Adding the collaborative stage on top of MMR costs a little on every accuracy
-measure and adds nothing to diversity, already saturated at 0.735. The likely mechanism
-is competition for the same positions: the blend promotes co-listened artists, and MMR
-then penalises candidates most similar to the history — which co-listened artists tend to
-be — so each partly undoes the other. Against content alone the cascade is +0.046 nDCG,
-p = 0.195, not significant. The honest reading: **content + collaborative is best on
-accuracy, content + MMR best on top-10 recall and diversity, and the full cascade best at
-neither.** Production retains the cascade because diversity is a stated requirement and
-the accuracy cost is within noise, but the ablation does not support calling the
-composite an improvement, and nDCG alone is too coarse to express the trade — which is
-why Kaminskas and Bridge (2016) argue for beyond-accuracy reporting.
+**Stacking the two stages does not improve on either alone.** This is the ablation's
+least convenient result. The full cascade scores *below* content + MMR on HitRate@10
+(0.855 against 0.877) and nDCG@10 (0.695 against 0.701), and below content +
+collaborative on nDCG@10 (0.695 against 0.704). Adding the collaborative stage on top of
+MMR costs a little on every accuracy measure and adds nothing to diversity, which is
+already saturated at 0.735. The likely mechanism is competition for the same positions. The blend promotes
+co-listened artists; MMR then penalises the candidates most similar to the history, and
+co-listened artists tend to be exactly those. Each partly undoes the other. Against
+content alone the cascade is +0.046 nDCG at p = 0.195, not significant. The honest
+reading is that **content + collaborative is best on accuracy, content + MMR is best on
+top-10 recall and diversity, and the full cascade is best at neither.** Production keeps
+the cascade because diversity is a stated requirement and the accuracy cost is within
+noise. But the ablation does not support calling the composite an improvement, and nDCG
+alone is too coarse to express the trade. That is why Kaminskas and Bridge (2016) argue
+for reporting beyond accuracy.
 
-**Novelty was uninformative.** All arms scored ≈9.76: almost every track in a corpus this
+**Novelty was uninformative.** All arms scored ≈9.76. Almost every track in a corpus this
 size has one listener, so −log₂ popularity is near-constant and separates nothing.
 
-**Controlling for a metadata confound.** Held-out tracks resolve through `get_recording`,
-which adds their artist's tags, while candidates carry only the search response's:
-session tracks average 7.1 genre tags, candidates 2.6. Genre TF-IDF could therefore be
-detecting *richer metadata* rather than similarity. Re-running with negatives restricted
-to candidates carrying three or more tags — the bar 90% of targets clear — left accuracy
-intact and slightly higher (content-only nDCG 0.648 → 0.692, full cascade 0.695 → 0.726;
-n = 93 of 138 sessions retained enough well-tagged negatives), every ordering preserved
-(Figure 10). The collaborative advantage narrows to p = 0.059 in the smaller sample:
-significant in the primary condition, marginal in the control, stated as measured.
+**Controlling for a metadata confound.** Held-out tracks resolve through
+`get_recording`, which adds their artist's tags, while candidates carry only the search
+response's. Session tracks average 7.1 genre tags; candidates average 2.6. Genre TF-IDF
+could therefore be detecting *richer metadata* instead of similarity. I re-ran the
+evaluation with negatives restricted to candidates carrying three or more tags, the bar
+90% of targets clear. Accuracy held and rose slightly (content-only nDCG 0.648 → 0.692,
+full cascade 0.695 → 0.726; n = 93 of 138 sessions kept enough well-tagged negatives),
+every ordering preserved (Figure 10). The collaborative
+advantage narrows to p = 0.059 in the smaller sample: significant in the primary
+condition, marginal in the control, stated as measured.
 
 ![Figure 10](docs/final-evidence/fig_control.png)
 
@@ -1137,12 +1142,12 @@ significant in the primary condition, marginal in the control, stated as measure
 ### 5.6 Correctness, reproducibility and latency
 
 **Correctness.** 121 backend and 29 frontend tests pass with none skipped, weighted
-toward failure paths; the adversarial sweep passes 32/32; `ruff`, `mypy` and `tsc` run
-clean (Section 4.10).
+toward failure paths. The adversarial sweep passes 32/32, and `ruff`, `mypy` and `tsc`
+run clean (Section 4.10).
 
-**Reproducibility.** Eight paired identical requests returned identical tracks 8/8 — a
-*result*, not an assumption, since it was false until the candidate-pool cache was added
-(Section 4.7), and it holds for the cache's lifetime rather than absolutely.
+**Reproducibility.** Eight paired identical requests returned identical tracks, 8/8.
+That is a *result*, not an assumption: it was false until I added the candidate-pool
+cache (Section 4.7), and it holds for the cache's lifetime, not absolutely.
 
 **Latency**, measured against live upstreams from a freshly started process:
 
@@ -1158,71 +1163,70 @@ clean (Section 4.10).
 
 **Figure 11.** the same three scenarios on a logarithmic axis.
 
-These figures do not contradict Table 1; "cold" does different work in each. Table 1
+These figures do not contradict Table 1. "Cold" does different work in each. Table 1
 empties one cache inside a running process whose others are warm. Table 5's 155.4 s is a
-genuine cold start with *every* cache empty, recorded while `/health` reported MusicBrainz
-and AcousticBrainz degraded, so it also carries backoff time — a worst case measured
-once, not a median (Appendix C).
+genuine cold start with *every* cache empty, recorded while `/health` reported
+MusicBrainz and AcousticBrainz degraded, so it also carries backoff time. It is a worst
+case measured once, not a median (Appendix C).
 
 Nothing in the mathematics is slow; ranking fifty candidates takes milliseconds. The
 figure that matters for usability is the **29 s median for a new listening history**, and
-it is poor: a listener starting fresh waits half a minute, and caching cannot help
+it is poor. A listener starting fresh waits half a minute, and caching cannot help,
 because the cache is empty precisely when a new listener arrives (Section 6.3). Caching
-is therefore not an optimisation but a precondition for usability — an uncomfortable
-finding for a project whose premise is *not* accumulating state.
+is therefore not an optimisation but a precondition for usability. That is an
+uncomfortable finding for a project whose premise is *not* accumulating state.
 
 ### 5.7 The privacy claim, audited
 
-Because the claim that the server stores nothing about a user *is* the project, it was
-audited against the code rather than assumed.
+The claim that the server stores nothing about a user *is* the project, so I audited it
+against the code instead of assuming it.
 
 There is no database, ORM or persistent store in the backend. Exactly six module-level
-dictionaries survive a request — track features and video ids by MBID, candidate pools by
-genre tag, artist tags and similar artists by artist MBID, and the day's Top 5 — each
-keyed on a public identifier and identical for every caller. None is keyed on or derived
-from a user, session or request identity; no cookie or client identifier is issued; and
-the listening history arrives in a request body, is used within the call and is never
-written. The collaborative stage sends ListenBrainz an *artist* identifier, nothing
-else.
+dictionaries survive a request: track features and video ids by MBID, candidate pools by
+genre tag, artist tags and similar artists by artist MBID, and the day's Top 5. Each is
+keyed on a public identifier and holds a value identical for every caller. None is keyed
+on or derived from a user, session or request identity. No cookie or client identifier is
+issued. The listening history arrives in a request body, is used within the call, and is
+never written. The collaborative stage sends ListenBrainz an *artist* identifier and
+nothing else.
 
-The claim holds with one nuance stated rather than hidden: the caches are shared, so a
-track one listener caused to be fetched makes a later listener's request faster. That
-reveals nothing about who requested what — but "stateless" does narrower work than the
-word suggests, and Section 5.6 shows the system is barely usable without those caches.
-The accurate formulation is that NextTrack stores nothing *about users*, not that it
-stores nothing.
+The claim holds, with one nuance I would rather state than hide. The caches are shared,
+so a track one listener caused to be fetched makes a later listener's request faster.
+That reveals nothing about who requested what. But "stateless" does narrower work than
+the word suggests, and Section 5.6 shows the system is barely usable without those
+caches. NextTrack stores nothing *about users*; it does not store nothing.
 
 ### 5.8 Threats to validity, and a critique of the project
 
 **The missing user study is the dominant threat.** Every accuracy figure measures one
 thing: how often the engine ranks highly the track a listener happened to play next.
 Shani and Gunawardana (2011) argue precisely that such proxies do not establish user
-value — a recommendation the listener would have loved but did not play scores zero, so
+value. A recommendation the listener would have loved but did not play scores zero. So
 NextTrack could beat every baseline here and still be worse to listen to.
 
 **The injected target.** Section 5.5's figures presuppose reachability that Section 5.4
-shows does not exist. They are a measurement of ranking in isolation, and read as
-anything more they would be badly misleading.
+shows does not exist. They measure ranking in isolation, and read as anything more they
+would badly mislead.
 
 **The sampled-negative protocol has known defects.** Ranking one target against 99
 sampled negatives is standard here (Kang and McAuley, 2018; Sun et al., 2019), but
-Krichene and Rendle (2020) show sampled metrics are not consistent estimators of their
-full-catalogue counterparts and can reverse the ordering of close systems. Three arms
-here differ by under 0.01 nDCG — exactly that regime — so the ablation's ordering among
-engine configurations is indicative rather than established. The baseline comparisons,
-with gaps above 0.46 nDCG, are not at risk. Re-running without sampling would settle it,
-and is this evaluation's cheapest available improvement.
+Krichene and Rendle (2020) show that sampled metrics are not consistent estimators of
+their full-catalogue counterparts and can reverse the ordering of close systems. Three
+arms here differ by under 0.01 nDCG, exactly that regime, so the ablation's ordering
+among engine configurations is indicative rather than established. The baseline
+comparisons, with gaps above 0.46 nDCG, are not at risk. Re-running without sampling
+would settle it, and it is this evaluation's cheapest available improvement.
 
-**Sample size and composition.** 140 sessions from 24 self-selected ListenBrainz users —
-deliberate scrobblers, skewed toward well-tagged catalogue music, biasing the corpus in a
-direction that *flatters* a genre-driven engine.
+**Sample size and composition.** 140 sessions from 24 self-selected ListenBrainz users:
+deliberate scrobblers, skewed toward well-tagged catalogue music, which biases the corpus
+in a direction that *flatters* a genre-driven engine.
 
-**Ground-truth ambiguity.** A 30-minute session boundary is a convention, not a fact:
-music left playing while working yields sequences that were never intentional.
+**Ground-truth ambiguity.** A 30-minute session boundary is a convention, not a fact.
+Music left playing while working yields sequences nobody chose.
 
-**Developer-run evaluation.** Every measurement was designed and run by the system's
-author. Mechanical metrics, shared pools, a fixed snapshot and full reproducibility limit
-the room for bias, but the choice of metrics and protocol remained mine.
+**Developer-run evaluation.** I designed and ran every measurement myself. Mechanical
+metrics, shared pools, a fixed snapshot and reproducibility limit the room for bias, but
+the choice of metrics and protocol was mine.
 
 Sections 6.2 and 6.3 draw the balance of what this evidence does and does not support.
 
@@ -1232,11 +1236,11 @@ Sections 6.2 and 6.3 draw the balance of what this evidence does and does not su
 ### 6.1 Objectives: what was achieved, and what was not
 
 NextTrack asked whether a music recommender needs a permanent user profile to return a
-useful next track. The answer is narrower than the question but no longer speculative:
-**a stateless recommender can be built, and it ranks real listeners' next tracks far
-above chance and popularity — but only when the target is in the candidate set, and its
-own retrieval stage never puts it there. Whether listeners would prefer its choices
-remains untested.**
+useful next track. The answer is narrower than the question, but no longer speculative.
+**A stateless recommender can be built, and it ranks real listeners' next tracks far
+above chance and popularity. But it does so only when the target is in the candidate
+set, and its own retrieval never puts it there. Whether listeners would prefer its
+choices remains untested.**
 
 | # | Objective | Status | Evidence |
 |---|---|---|---|
@@ -1251,94 +1255,95 @@ remains untested.**
 
 *Table 6. Final status of the eight objectives set in the preliminary report.*
 
-**Why Objective 7 was not achieved.** This was a scheduling consequence rather than an
-obstacle encountered. At the draft submission the engine was the content stage alone,
-leaving Objective 4 — both remaining cascade stages, their ablation and the harness that
-measures them — as the largest outstanding deliverable, and completing it absorbed the
-time the study needed. Running the study earlier would have evaluated an engine that
-changed substantially afterwards, including the rationale and energy defects of
-Sections 4.6 and 4.8 that shaped what a participant would have seen and been told.
-Recruiting twelve participants, running counterbalanced sessions and analysing the results
-does not compress into the window that remained. The protocol is fully specified and
-carried into Section 6.5; only execution is outstanding. The cost is stated rather than
-minimised: this project shows its recommendations are *predictive*, not *good*.
+**Why Objective 7 was not achieved.** This was a scheduling consequence, not an obstacle
+I ran into. At the draft submission the engine was the content stage alone, which left
+Objective 4 as the largest outstanding deliverable: both remaining cascade stages, their
+ablation, and the harness that measures them. Completing that work absorbed the time the
+study needed. Running the study earlier would have evaluated an engine that changed
+substantially afterwards, including the rationale and energy defects of Sections 4.6 and
+4.8, which shaped what a participant would have seen. Recruiting twelve participants,
+running counterbalanced sessions and analysing the results does not compress into the
+window that remained. The protocol is fully specified and carried into Section 6.5. Only
+execution is outstanding. I would rather state the cost than minimise it: this project
+shows its recommendations are *predictive*, not that they are *good*.
 
-**Objective 6 was achieved but narrowed**: planned as an end-to-end comparison of engine
-configurations, it became a ranking-only measurement under an injected target once
+**Objective 6 was achieved but narrowed.** I planned an end-to-end comparison of engine
+configurations. It became a ranking-only measurement under an injected target, once
 Section 5.4 established that retrieval never reaches the held-out track.
 
 ### 6.2 The most substantial findings
 
-**Retrieval, not ranking, is the binding constraint** — the most consequential finding,
-and a negative one. Across 138 sessions the candidate generator never once contained the
-track the listener played next, so end-to-end accuracy is zero however well the engine
-ranks, and both new stages sit above the layer that fails.
+**Retrieval, not ranking, is the binding constraint.** This is the most consequential
+finding, and a negative one. Across 138 sessions the candidate generator never once
+contained the track the listener played next, so end-to-end accuracy is zero however
+well the engine ranks, and both new stages sit above the layer that fails.
 
-**Collaborative evidence and collaborative surveillance are separable.** The design's
-central bet was that the useful half of collaborative filtering — audiences overlapping
-where metadata does not — could be had without storing anything about a user.
-ListenBrainz's population-level artist similarity makes that concrete: NextTrack sends one
-artist identifier and receives a ranked list, transmitting nothing about a user, session
-or history. This is the clearest positive result, and it generalises: where a provider
-aggregates on its own side, a consumer can borrow behavioural evidence without becoming a
-data controller.
+**Collaborative evidence and collaborative surveillance are separable.** My central bet
+was that the useful half of collaborative filtering, audiences overlapping where metadata
+does not, could be had without storing anything about a user. ListenBrainz's
+population-level artist similarity makes that concrete. NextTrack sends one artist
+identifier and receives a ranked list, transmitting nothing about a user, session or
+history. This is the clearest positive result, and it generalises: where a provider
+aggregates on its own side, a consumer can borrow behavioural evidence without becoming
+a data controller.
 
 **Statelessness does not imply reproducibility.** Two consecutive `grunge` tag searches
-shared none of their fifty results, so identical requests drifted until candidate pools
-were cached (Section 4.7) — missed by every test, because tests mock the upstream that
-misbehaves. A stateless service inherits its upstreams' non-determinism.
+shared none of their fifty results, so identical requests drifted until I cached the
+pools (Section 4.7). Every test missed it: tests mock the upstream that misbehaves. A
+stateless service inherits its upstreams' non-determinism.
 
 **Free infrastructure is a risk, and static analysis outperformed testing.** Three
 upstream constraints reshaped the system without appearing in any code review, and the
 two defects that most damaged output quality were caught by `mypy` and by reading a live
-screen rather than by 37 passing tests.
+screen, not by 37 passing tests.
 
 ### 6.3 Limitations
 
 Five limitations bound what this report claims. The user study's absence dominates:
-NextTrack is shown to be predictive, not enjoyable. Retrieval sets the ceiling, so ranking
-improvements have bounded payoff. Latency is a real usability limit — a median 29 s for a
-listener with a new history (Section 5.6), which caching cannot fix because the cache is
-empty precisely when a new listener arrives. The corpus is modest and skewed toward active
-ListenBrainz users, and determinism holds only for the candidate cache's lifetime.
-Finally, the acoustic block carries far less signal than the design assumed.
+NextTrack is shown to be predictive, not enjoyable. Retrieval sets the ceiling, so
+ranking improvements have a bounded payoff. Latency is a real usability limit, a median
+29 s for a new history (Section 5.6), and caching cannot fix it, because the cache is
+empty precisely when a new listener arrives. The corpus is modest and skewed toward
+active ListenBrainz users. Determinism holds only for the candidate cache's lifetime.
+And the acoustic block carries far less signal than I assumed.
 
 ### 6.4 Lessons learned
 
-The most transferable lesson concerns where defects hide. The problems that mattered were
-not in the recommendation mathematics, which was standard and correct, but at the seams —
-an unstable upstream, a plausible-but-wrong proxy variable, an unenforced testing
-convention, a tuple unpacked one level too shallow. Each survived because something
-adjacent was true: genre selection *was* deterministic, the danceability field name *was*
-correct, the tests *were* passing. Re-checking what the author already believes finds none
-of these; static typing, adversarial property assertions and reading the running system's
+The most transferable lesson concerns where defects hide. The problems that mattered
+were not in the recommendation mathematics, which was standard and correct. They were at
+the seams: an unstable upstream, a plausible-but-wrong proxy variable, an unenforced
+testing convention, a tuple unpacked one level too shallow. Each survived because
+something adjacent was true. Genre selection *was* deterministic. The danceability field
+name *was* correct. The tests *were* passing. Re-checking what I already believed found
+none of these. Static typing, adversarial property assertions and reading the running
 output found all of them.
 
-The second lesson is that honest evaluation design is harder than evaluation execution:
-the tempting dataset — sequences from the project's own seed pool — would have produced
-better numbers and meant nothing.
+The second lesson is that honest evaluation design is harder than evaluation execution.
+The tempting dataset, sequences from my own seed pool, would have produced better
+numbers and meant nothing.
 
 ### 6.5 Future work
 
-In priority order. **The user study**, whose protocol is complete — twelve or more
-participants against a popularity baseline, System Usability Scale (Brooke, 1996),
-acceptance rate, Wilcoxon signed-rank test (Wilcoxon, 1945) and thematic analysis (Braun
-and Clarke, 2006) — leaving only execution. Then **candidate retrieval**,
-where Section 5.4 locates the ceiling: searching more than three genres, or using
-ListenBrainz similarity to *generate* candidates rather than only re-rank them. Then **a
-better acoustic source** via ESSENTIA (Bogdanov et al., 2013); **an unsampled ablation**,
-per Krichene and Rendle (2020); **cascade-weight tuning**; and **distributed caching**
-that extends reproducibility without becoming a per-user store.
+In priority order. **The user study** comes first, and its protocol is already
+complete: twelve or more participants against a popularity baseline, System Usability
+Scale (Brooke, 1996), acceptance rate, Wilcoxon signed-rank test (Wilcoxon, 1945) and
+thematic analysis (Braun and Clarke, 2006). Only execution is left. Then **candidate
+retrieval**, where Section 5.4 locates the ceiling: searching more than three genres, or
+using ListenBrainz similarity to *generate* candidates instead of only re-ranking them.
+After that, **a better acoustic source** via ESSENTIA (Bogdanov et al., 2013); **an
+unsampled ablation**, per Krichene and Rendle (2020); **cascade-weight tuning**; and
+**distributed caching** that extends reproducibility without a per-user store.
 
 ### 6.6 Closing assessment
 
-The premise survives contact with evidence, with its scope reduced twice. A recommender
+The premise survives contact with evidence, but its scope narrowed twice. A recommender
 storing nothing about its users can produce explained, reproducible, genre-coherent
-recommendations, and can borrow population-level collaborative evidence without
+recommendations, and it can borrow population-level collaborative evidence without
 compromising that position. It ranks a real listener's next track far above the obvious
-baselines — but only once that track is in the candidate set, because its own retrieval
-never gets it there; and whether those recommendations are *good* rather than merely
-predictive needs listeners. Both are the work that remains.
+baselines. The first narrowing: only once that track is in the candidate set, and its
+own retrieval never gets it there. The second: whether those recommendations are *good*
+rather than merely predictive still needs listeners to say. Both are the work that
+remains.
 
 
 ## References
