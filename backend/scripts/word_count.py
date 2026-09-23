@@ -36,7 +36,7 @@ def count(text: str, strict: bool) -> int:
     if not strict:
         return len(body.split())
     lines = [ln for ln in body.splitlines() if not _LEGEND.match(ln)]
-    lines = [ln for ln in lines if not ln.lstrip().startswith(("#", "|---", "| ---"))]
+    lines = [ln for ln in lines if not ln.lstrip().startswith(("#", "|---", "| ---", "!["))]
     return len(" ".join(lines).split())
 
 
