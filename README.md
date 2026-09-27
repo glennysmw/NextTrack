@@ -124,12 +124,15 @@ cd backend && python scripts/adversarial_sweep.py
 
 ### Report verification
 
-Two scripts keep the written report honest against the code:
+`verify_report_claims.py` keeps the written report honest against the code: it
+re-checks every number, file reference and citation in the report against the
+results in `docs/final-evidence/`. It reads the report's Markdown source, which
+is submitted separately and is not part of this repository, so it runs only with
+a `FinalReport.md` placed at the repository root:
 
 ```bash
 cd backend
 python scripts/verify_report_claims.py   # 85 assertions: every number, file and citation
-python scripts/word_count.py             # per-chapter word counts against the limits
 ```
 
 ### Static checks
@@ -154,9 +157,14 @@ python scripts/offline_eval.py             # run the ablation offline and determ
 python scripts/make_figures.py             # render every figure from the raw results
 ```
 
-Results, raw data and figures live in `docs/final-evidence/`. See
-`FINAL_REQUIREMENTS_AUDIT.md` for the requirements traceability matrix and
-`FINAL_ENGINEERING_LOG.md` for the defect and implementation record.
+Results, raw data and figures live in `docs/final-evidence/`; every figure and
+table in the report is rendered from those files.
+
+The written report is submitted separately and is not kept in this repository.
+`backend/scripts/verify_report_claims.py` operates on its Markdown source rather
+than on the application: it expects a `FinalReport.md` at the repository root and
+exits with `FileNotFoundError` without one. Nothing in the API, the frontend or
+the test suite depends on it.
 
 ## Demo mode
 
@@ -196,11 +204,6 @@ nexttrack/
 ├── README.md
 ├── .gitignore
 ├── .env.example                     # optional CORS_ORIGINS / LOG_LEVEL overrides
-├── FinalReport.md                   # CM3070 final project report
-├── FINAL_REQUIREMENTS_AUDIT.md      # requirements traceability matrix
-├── FINAL_ENGINEERING_LOG.md         # defects found/fixed, functionality implemented
-├── FINAL_SUBMISSION_READINESS.md    # environment, build, test and verification record
-├── FINAL_VIDEO_PLAN.md              # demonstration video plan
 ├── docs/
 │   ├── REMAINING_WORK.md            # pre-existing gap analysis (superseded)
 │   └── final-evidence/              # results, figures, screenshots, API transcripts
@@ -236,8 +239,9 @@ nexttrack/
 │   │   ├── make_figures.py          # every figure, from the raw results
 │   │   ├── latency_benchmark.py     # live end-to-end latency
 │   │   ├── capture_api_examples.py  # live request/response transcripts
-│   │   └── verify_seeds.py          # validate seed MBIDs against MusicBrainz
-│   └── tests/                       # 115 tests across 14 files
+│   │   ├── verify_seeds.py          # validate seed MBIDs against MusicBrainz
+│   │   └── verify_report_claims.py  # report claims — needs the report source
+│   └── tests/                       # 121 tests across 14 files
 │       ├── conftest.py              # mocked externals + enforced network guard
 │       ├── fixtures/
 │       ├── test_api.py              test_pipeline.py        test_diversity.py
