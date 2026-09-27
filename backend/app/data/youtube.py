@@ -124,8 +124,11 @@ async def search_songs(query: str, limit: int = 10) -> list[dict]:
 async def ping() -> str:
     """Probe YouTube Music reachability for /health: ok | down."""
     try:
+        # The probe query must be a plausible search term: YouTube Music rejects
+        # some placeholder strings (notably "test") with HTTP 400, which made this
+        # probe report a perfectly healthy dependency as down.
         await asyncio.to_thread(
-            lambda: _get_client().search("test", filter="songs", limit=1)
+            lambda: _get_client().search("music", filter="songs", limit=1)
         )
         return "ok"
     except Exception as exc:

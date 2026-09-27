@@ -35,13 +35,3 @@ desktop.ini
 
 # Logs
 *.log
-
-# Agent/editor tooling scratch left in the project root — not part of NextTrack.
-# The application's own package.json lives in frontend/.
-.claude/
-.claude-flow/
-.agents/
-.mcp.json
-skills-lock.json
-/package.json
-/package-lock.json
